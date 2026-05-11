@@ -1,0 +1,54 @@
+<nav class="nav" [class.scrolled]="scrolled" [class.menu-open]="menuOpen" role="navigation" aria-label="Main navigation">
+
+  <a href="/" class="nav__logo-link" aria-label="Lead Farmer — home">
+    @if (scrolled) {
+      <img
+        src="assets/brand/brand-lettering.png"
+        alt="Lead Farmer"
+        class="nav__logo"
+      >
+    } @else {
+      <img
+        src="assets/brand/brand-lettering-white.png"
+        alt="Lead Farmer"
+        class="nav__logo"
+      >
+    }
+  </a>
+
+  <!-- Desktop links -->
+  <ul class="nav__links" role="list">
+    <li><a href="#about"    class="nav__link">Story</a></li>
+    <li><a href="#products" class="nav__link">Products</a></li>
+    <li><a href="#articles" class="nav__link">Articles</a></li>
+    <li><a href="#contact"  class="nav__link">Contact</a></li>
+  </ul>
+
+  <!-- Mobile hamburger -->
+  <button
+    class="nav__hamburger"
+    type="button"
+    [attr.aria-expanded]="menuOpen"
+    aria-controls="nav-mobile-menu"
+    aria-label="Toggle navigation menu"
+    (click)="toggleMenu()"
+  >
+    <span class="nav__bar" aria-hidden="true"></span>
+    <span class="nav__bar" aria-hidden="true"></span>
+    <span class="nav__bar" aria-hidden="true"></span>
+  </button>
+
+  <!-- Mobile menu panel -->
+  <div
+    id="nav-mobile-menu"
+    class="nav__mobile-menu"
+    [class.open]="menuOpen"
+    role="menu"
+  >
+    <a href="#about"    class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Story</a>
+    <a href="#products" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Products</a>
+    <a href="#articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Articles</a>
+    <a href="#contact"  class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Contact</a>
+  </div>
+
+</nav>

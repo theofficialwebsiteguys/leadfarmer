@@ -1,0 +1,27 @@
+<div class="carousel" [attr.aria-label]="productName + ' product images'">
+
+  @for (img of images; track img.src; let i = $index) {
+    <img
+      class="carousel__img"
+      [class.is-active]="i === currentIndex"
+      [src]="img.src"
+      [alt]="productName + ' — ' + img.label"
+    >
+  }
+
+  @if (!isSingle) {
+    <div class="carousel__selectors" role="tablist" [attr.aria-label]="productName + ' — select image'">
+      @for (img of images; track img.src; let i = $index) {
+        <button
+          class="carousel__selector"
+          role="tab"
+          [class.is-active]="i === currentIndex"
+          [attr.aria-selected]="i === currentIndex"
+          [attr.aria-label]="img.label"
+          (click)="goTo(i)"
+        >{{ img.label }}</button>
+      }
+    </div>
+  }
+
+</div>

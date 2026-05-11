@@ -1,0 +1,212 @@
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" aria-label="Lead Farmer — Southern Tier Cannabis Cultivation">
+
+  <!--
+    VIDEO BACKGROUND — swap placeholder div for a <video> element when footage is ready:
+
+    <video class="hero__video" autoplay muted loop playsinline aria-hidden="true"
+           poster="assets/video/hero-poster.jpg">
+      <source src="assets/video/hero.mp4" type="video/mp4">
+    </video>
+  -->
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="hero__overlay" aria-hidden="true"></div>
+
+  <div class="hero__content">
+
+    <img
+      src="assets/brand/brand-arch-head.png"
+      alt="Lead Farmer — Make the Grass Grow"
+      class="hero__mark"
+    >
+
+    <h1 class="hero__title">Leadfarmer</h1>
+
+    <p class="hero__tagline">
+      Grown with precision, care, and deep respect for the craft.<br>
+      Every plant tells a story of quality and dedication.
+    </p>
+
+    <p class="hero__scroll" aria-hidden="true">Scroll</p>
+
+    <div class="hero__ctas">
+      <a href="#products" class="btn btn--white">View Products</a>
+      <a href="#articles" class="btn btn--dark">Read Articles</a>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ============================================================
+     CULTIVATION STORY
+     ============================================================ -->
+<section class="story" id="about" aria-labelledby="story-heading">
+  <div class="story__inner">
+
+    <div class="story__image-col" aria-hidden="true">
+      <img
+        src="assets/brand/brand-full.png"
+        alt=""
+        class="story__image"
+      >
+    </div>
+
+    <div class="story__text-col">
+      <p class="story__label">The Craft</p>
+      <h2 id="story-heading" class="story__heading">
+        Every Plant.<br>Every Room.<br>Every Harvest.
+      </h2>
+      <p class="story__body">
+        We cultivate cannabis the way it should be grown — deliberately, and with care.
+        From the moment a clone is set to the final cure, every decision is made with the
+        plant and the customer in mind. Our grow rooms in the Southern Tier are built for
+        precision, consistency, and quality without compromise.
+      </p>
+      <p class="story__location">Southern Tier, New York</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PRODUCTS — editorial alternating layout with image carousel
+     ============================================================ -->
+<section id="products" aria-labelledby="products-heading">
+
+  <div class="products-header">
+    <div class="products-header__inner">
+      <p class="section-label">Our Strains</p>
+      <h2 id="products-heading" class="section-heading">What We Grow</h2>
+    </div>
+  </div>
+
+  @for (product of products; track product.id; let i = $index) {
+    <article
+      class="product-feature"
+      [class.product-feature--flipped]="i % 2 !== 0"
+      [attr.aria-labelledby]="'product-' + product.id"
+    >
+      <!-- Carousel: auto-fades through images; single-image products show static -->
+      <div class="product-feature__carousel-wrap">
+        <app-product-carousel
+          [images]="product.images"
+          [productName]="product.name"
+        ></app-product-carousel>
+      </div>
+
+      <div class="product-feature__content">
+        <p class="product-feature__type">{{ product.type }}</p>
+        <h3 [id]="'product-' + product.id" class="product-feature__name">
+          {{ product.name }}
+        </h3>
+        <p class="product-feature__desc">{{ product.description }}</p>
+        <div class="product-feature__forms" aria-label="Available in">
+          <span class="product-feature__forms-label">Available In</span>
+          <ul class="product-feature__forms-list" role="list">
+            @for (form of product.availableForms; track form) {
+              <li>{{ form }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </article>
+  }
+
+  <div class="products-cta">
+    <!-- TODO: Update href to real products/merch page URL -->
+    <a href="#" class="btn btn--black">Browse All Products</a>
+  </div>
+
+</section>
+
+
+<!-- ============================================================
+     ARTICLES / BLOG PREVIEW
+     ============================================================ -->
+<section class="articles" id="articles" aria-labelledby="articles-heading">
+  <div class="articles__inner">
+
+    <div class="articles__header">
+      <p class="section-label">Field Notes</p>
+      <h2 id="articles-heading" class="section-heading">Latest Articles</h2>
+    </div>
+
+    <div class="articles__grid">
+      @for (article of articles; track article.id) {
+        <article class="article-card">
+
+          <div class="article-card__img-wrap" aria-hidden="true">
+            @if (article.image) {
+              <img
+                [src]="article.image"
+                [alt]="article.title"
+                class="article-card__img"
+              >
+            } @else {
+              <div class="article-card__placeholder">
+                <span>[Article Image]</span>
+              </div>
+            }
+          </div>
+
+          <div class="article-card__body">
+            <time class="article-card__date" [dateTime]="article.date">
+              {{ article.date | date:'MMMM d, yyyy' | uppercase }}
+            </time>
+            <h3 class="article-card__title">{{ article.title }}</h3>
+            <p class="article-card__excerpt">{{ article.excerpt }}</p>
+            <!-- TODO: Update href to real article route -->
+            <a
+              [href]="'/articles/' + article.slug"
+              class="article-card__link"
+              [attr.aria-label]="'Read: ' + article.title"
+            >Read More</a>
+          </div>
+
+        </article>
+      }
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     CONTACT + FOOTER  (unified dark section)
+     ============================================================ -->
+<section class="contact" id="contact" aria-labelledby="contact-heading">
+  <div class="contact__inner">
+
+    <img
+      src="assets/brand/brand-head.png"
+      alt=""
+      class="contact__mark"
+      aria-hidden="true"
+    >
+
+    <h2 id="contact-heading" class="contact__heading">Get In Touch</h2>
+
+    <!-- TODO: Replace with real email address -->
+    <a [href]="'mailto:' + contactEmail" class="contact__email">
+      {{ contactEmail }}
+    </a>
+
+    <!-- TODO: Replace with real address if desired -->
+    <address class="contact__address">{{ contactAddress }}</address>
+
+  </div>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer__inner">
+    <hr class="footer__rule" aria-hidden="true">
+    <p class="footer__copy">
+      &copy; {{ currentYear }} Lead Farmer. Premium Cannabis Cultivation.
+    </p>
+  </div>
+</footer>
