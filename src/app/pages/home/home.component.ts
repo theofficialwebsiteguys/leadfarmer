@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 
 interface ProductImage {
@@ -32,8 +32,17 @@ interface Article {
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit {
+  @ViewChild('heroVideo') private heroVideoRef!: ElementRef<HTMLVideoElement>;
   readonly currentYear = new Date().getFullYear();
+
+  ngAfterViewInit(): void {
+    const video = this.heroVideoRef?.nativeElement;
+    if (video) {
+      video.muted = true;
+      video.play().catch(() => {});
+    }
+  }
 
   private readonly selectedImages = new Map<number, number>();
 
