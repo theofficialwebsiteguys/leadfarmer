@@ -3,26 +3,26 @@
      ============================================================ -->
 <section class="hero" aria-label="Lead Farmer — Southern Tier Cannabis Cultivation">
 
-  <!--
-    VIDEO BACKGROUND — swap placeholder div for a <video> element when footage is ready:
-
-    <video class="hero__video" autoplay muted loop playsinline aria-hidden="true"
-           poster="assets/video/hero-poster.jpg">
-      <source src="assets/video/hero.mp4" type="video/mp4">
-    </video>
-  -->
-  <div class="hero__bg" aria-hidden="true"></div>
+  <!-- Vertical video — swap object-position or src when landscape footage is available -->
+  <video
+    class="hero__video"
+    autoplay
+    muted
+    loop
+    playsinline
+    aria-hidden="true"
+  >
+    <source src="assets/hero-video.mp4" type="video/mp4">
+  </video>
   <div class="hero__overlay" aria-hidden="true"></div>
 
   <div class="hero__content">
 
     <img
-      src="assets/brand/brand-arch-head.png"
-      alt="Lead Farmer — Make the Grass Grow"
-      class="hero__mark"
+      src="assets/brand/brand-lettering-white.png"
+      alt="Lead Farmer"
+      class="hero__wordmark"
     >
-
-    <h1 class="hero__title">Leadfarmer</h1>
 
     <p class="hero__tagline">
       Grown with precision, care, and deep respect for the craft.<br>
@@ -74,7 +74,7 @@
 
 
 <!-- ============================================================
-     PRODUCTS — editorial alternating layout with image carousel
+     PRODUCTS — portrait image + editorial text
      ============================================================ -->
 <section id="products" aria-labelledby="products-heading">
 
@@ -91,12 +91,14 @@
       [class.product-feature--flipped]="i % 2 !== 0"
       [attr.aria-labelledby]="'product-' + product.id"
     >
-      <!-- Carousel: auto-fades through images; single-image products show static -->
-      <div class="product-feature__carousel-wrap">
-        <app-product-carousel
-          [images]="product.images"
-          [productName]="product.name"
-        ></app-product-carousel>
+
+      <!-- Portrait image — active index controlled by image selector tabs -->
+      <div class="product-feature__image-wrap">
+        <img
+          [src]="product.images[getSelectedIndex(product.id)].src"
+          [alt]="product.name + ' — ' + product.images[getSelectedIndex(product.id)].label"
+          class="product-feature__image"
+        >
       </div>
 
       <div class="product-feature__content">
@@ -105,15 +107,26 @@
           {{ product.name }}
         </h3>
         <p class="product-feature__desc">{{ product.description }}</p>
-        <div class="product-feature__forms" aria-label="Available in">
-          <span class="product-feature__forms-label">Available In</span>
-          <ul class="product-feature__forms-list" role="list">
-            @for (form of product.availableForms; track form) {
-              <li>{{ form }}</li>
-            }
-          </ul>
-        </div>
+
+        @if (product.images.length > 1) {
+          <div class="product-feature__selector" aria-label="Select product image">
+            <span class="product-feature__selector-label">View</span>
+            <ul class="product-feature__selector-list" role="list">
+              @for (img of product.images; track img.label; let i = $index) {
+                <li>
+                  <button
+                    class="product-feature__selector-btn"
+                    [class.is-active]="getSelectedIndex(product.id) === i"
+                    [attr.aria-pressed]="getSelectedIndex(product.id) === i"
+                    (click)="selectImage(product.id, i)"
+                  >{{ img.label }}</button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
       </div>
+
     </article>
   }
 
@@ -177,7 +190,7 @@
 
 
 <!-- ============================================================
-     CONTACT + FOOTER  (unified dark section)
+     CONTACT + FOOTER
      ============================================================ -->
 <section class="contact" id="contact" aria-labelledby="contact-heading">
   <div class="contact__inner">

@@ -1,14 +1,18 @@
 import { Component } from '@angular/core';
 import { DatePipe, UpperCasePipe } from '@angular/common';
-import { ProductCarouselComponent, ProductImage } from '../../components/product-carousel/product-carousel.component';
+
+interface ProductImage {
+  label: string;
+  src: string;
+}
 
 interface Product {
   id: number;
   name: string;
   type: string;
   description: string;
-  images: ProductImage[];       // { label, src } — label drives the selector button text
-  availableForms: string[];     // listed in the "Available In" section
+  images: ProductImage[];   // first image is shown as hero; others reserved for future gallery
+  availableForms: string[];
 }
 
 // Replace with API/CMS data when available
@@ -24,12 +28,22 @@ interface Article {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [DatePipe, UpperCasePipe, ProductCarouselComponent],
+  imports: [DatePipe, UpperCasePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
   readonly currentYear = new Date().getFullYear();
+
+  private readonly selectedImages = new Map<number, number>();
+
+  getSelectedIndex(productId: number): number {
+    return this.selectedImages.get(productId) ?? 0;
+  }
+
+  selectImage(productId: number, index: number): void {
+    this.selectedImages.set(productId, index);
+  }
 
   // TODO: Replace with real contact details
   readonly contactEmail = 'info@leadfarmer.com';

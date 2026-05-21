@@ -73,26 +73,22 @@
   background: var(--color-black);
   overflow: hidden;
 
-  // Placeholder — replace with <video class="hero__video"> when footage is ready
-  &__bg {
-    position: absolute;
-    inset: 0;
-    background: #080808;
-  }
-
-  // Style for the real video element once it replaces the placeholder
+  // Vertical source video — cover fills the hero, anchored to upper-center
+  // where the canopy/plants typically sit; swap object-position if the
+  // subject in the footage lands elsewhere
   &__video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 20%;
   }
 
   &__overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.48);
     z-index: 1;
   }
 
@@ -104,22 +100,14 @@
     align-items: center;
     text-align: center;
     padding: 6rem var(--container-pad) 4rem;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
-  &__mark {
-    width: min(280px, 52vw);
+  // Lettering wordmark — replaces the arch head + H1 text
+  &__wordmark {
+    width: min(480px, 72vw);
     height: auto;
-    margin-bottom: 0.5rem;
-  }
-
-  &__title {
-    font-family: var(--font-display);
-    font-size: clamp(4.5rem, 16vw, 13rem);
-    line-height: 0.95;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: var(--color-white);
+    margin-bottom: 0.75rem;
   }
 
   &__tagline {
@@ -255,27 +243,38 @@
 
 .product-feature {
   display: flex;
+  align-items: flex-start;
   background: var(--color-white);
   border-bottom: 1px solid var(--color-border);
 
-  &--flipped {
-    flex-direction: row-reverse;
-  }
+  &--flipped { flex-direction: row-reverse; }
 
-  // Carousel side — fixed height so absolute-positioned images have a container
-  &__carousel-wrap {
-    width: 55%;
+  // Let portrait images breathe at their natural dimensions — no cropping
+  &__image-wrap {
+    width: 50%;
     flex-shrink: 0;
-    height: clamp(600px, 90vh, 1100px);
+    overflow: hidden; // clips hover scale
   }
 
-  // Text side
+  &__image {
+    width: 100%;
+    height: auto; // natural portrait ratio, no clipping
+    display: block;
+    transition: transform 0.6s ease;
+
+    .product-feature:hover & { transform: scale(1.03); }
+  }
+
+  // Sticky so product info stays in view while the tall image scrolls past
   &__content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: clamp(2.5rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem);
+    justify-content: flex-start;
+    padding: clamp(3rem, 5vw, 5rem) clamp(2rem, 4vw, 4.5rem);
+    position: sticky;
+    top: 5.5rem; // clears fixed nav
+    align-self: flex-start;
   }
 
   &__type {
@@ -290,30 +289,30 @@
 
   &__name {
     font-family: var(--font-display);
-    font-size: clamp(2.75rem, 5vw, 5rem);
+    font-size: clamp(2.5rem, 4.5vw, 4.5rem);
     line-height: 1;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: var(--color-black);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
   }
 
   &__desc {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
+    font-size: 0.9rem;
     font-weight: 300;
     line-height: 1.85;
     color: #3a3a3a;
-    margin-bottom: 2rem;
-    max-width: 480px;
+    margin-bottom: 1.75rem;
   }
 
-  &__forms {
+  &__selector {
     border-top: 1px solid var(--color-border);
-    padding-top: 1.25rem;
+    padding-top: 1.125rem;
+    margin-top: auto;
   }
 
-  &__forms-label {
+  &__selector-label {
     display: block;
     font-family: var(--font-body);
     font-size: 0.5625rem;
@@ -321,36 +320,53 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-muted);
-    margin-bottom: 0.625rem;
+    margin-bottom: 0.75rem;
   }
 
-  &__forms-list {
+  &__selector-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     list-style: none;
+  }
 
-    li {
-      font-family: var(--font-body);
-      font-size: 0.75rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--color-black);
-      background: var(--color-off-white);
-      padding: 0.3rem 0.75rem;
+  &__selector-btn {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-black);
+    background: var(--color-off-white);
+    border: 1.5px solid transparent;
+    padding: 0.4rem 0.875rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+    &.is-active {
+      background: var(--color-black);
+      color: var(--color-white);
+    }
+
+    &:hover:not(.is-active) {
+      border-color: var(--color-black);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-black);
+      outline-offset: 2px;
     }
   }
 
-  @media (max-width: 900px) {
+  // Mobile: stack vertically, image full-width at natural portrait height
+  @media (max-width: 860px) {
     flex-direction: column !important;
+    align-items: stretch;
 
-    &__carousel-wrap {
-      width: 100%;
-      height: clamp(400px, 100vw, 700px);
-    }
+    &__image-wrap { width: 100%; }
 
     &__content {
+      position: static; // no sticky on mobile
       padding: 2rem var(--container-pad);
     }
   }
@@ -502,8 +518,6 @@
     width: 64px;
     height: auto;
     margin-bottom: 0.5rem;
-    // Invert the dark mascot to white for the black background
-    filter: brightness(0) invert(1);
     opacity: 0.85;
   }
 

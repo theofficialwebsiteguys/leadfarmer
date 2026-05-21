@@ -32,7 +32,17 @@
     &:focus-visible { outline-color: currentColor; }
   }
 
-  &__logo { height: 24px; width: auto; }
+  &__logo {
+    height: 100px;
+    width: auto;
+    // White skull on the dark hero
+    transition: filter 0.3s ease;
+  }
+
+  &.scrolled &__logo {
+    // Dark skull on white nav
+    filter: none;
+  }
 
   /* ---- Desktop links ---- */
   &__links {
