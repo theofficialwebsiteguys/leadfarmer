@@ -32,7 +32,7 @@
     <p class="hero__scroll" aria-hidden="true">Scroll</p>
 
     <div class="hero__ctas">
-      <a href="#products" class="btn btn--white">View Products</a>
+      <a href="#strains" class="btn btn--white">View Strains</a>
       <a href="#articles" class="btn btn--dark">Read Articles</a>
     </div>
 
@@ -74,68 +74,118 @@
 
 
 <!-- ============================================================
-     PRODUCTS — portrait image + editorial text
+     STRAINS — compact card grid
      ============================================================ -->
-<section id="products" aria-labelledby="products-heading">
+<section class="strains" id="strains" aria-labelledby="strains-heading">
+  <div class="strains__inner">
 
-  <div class="products-header">
-    <div class="products-header__inner">
+    <div class="strains__header">
       <p class="section-label">Our Strains</p>
-      <h2 id="products-heading" class="section-heading">What We Grow</h2>
+      <h2 id="strains-heading" class="section-heading">What We Grow</h2>
     </div>
-  </div>
 
-  @for (product of products; track product.id; let i = $index) {
-    <article
-      class="product-feature"
-      [class.product-feature--flipped]="i % 2 !== 0"
-      [attr.aria-labelledby]="'product-' + product.id"
-    >
+    <div class="strains__grid">
+      @for (product of products; track product.id) {
+        <article class="strain-card" [attr.aria-labelledby]="'strain-' + product.id">
 
-      <!-- Portrait image — active index controlled by image selector tabs -->
-      <div class="product-feature__image-wrap">
-        <img
-          [src]="product.images[getSelectedIndex(product.id)].src"
-          [alt]="product.name + ' — ' + product.images[getSelectedIndex(product.id)].label"
-          class="product-feature__image"
-        >
-      </div>
+          <div class="strain-card__media">
+            <app-product-carousel
+              [images]="product.images"
+              [productName]="product.name"
+            ></app-product-carousel>
+          </div>
 
-      <div class="product-feature__content">
-        <p class="product-feature__type">{{ product.type }}</p>
-        <h3 [id]="'product-' + product.id" class="product-feature__name">
-          {{ product.name }}
-        </h3>
-        <p class="product-feature__desc">{{ product.description }}</p>
+          <div class="strain-card__body">
+            <p class="strain-card__type">{{ product.type }}</p>
+            <h3 [id]="'strain-' + product.id" class="strain-card__name">
+              {{ product.name }}
+            </h3>
+            <p class="strain-card__desc">{{ product.description }}</p>
 
-        @if (product.images.length > 1) {
-          <div class="product-feature__selector" aria-label="Select product image">
-            <span class="product-feature__selector-label">View</span>
-            <ul class="product-feature__selector-list" role="list">
-              @for (img of product.images; track img.label; let i = $index) {
-                <li>
-                  <button
-                    class="product-feature__selector-btn"
-                    [class.is-active]="getSelectedIndex(product.id) === i"
-                    [attr.aria-pressed]="getSelectedIndex(product.id) === i"
-                    (click)="selectImage(product.id, i)"
-                  >{{ img.label }}</button>
-                </li>
+            <ul class="strain-card__forms" role="list">
+              @for (form of product.availableForms; track form) {
+                <li class="strain-card__form">{{ form }}</li>
               }
             </ul>
           </div>
+
+        </article>
+      }
+    </div>
+
+    <div class="strains__cta">
+      <!-- TODO: Update href to real products/merch page URL -->
+      <a href="#" class="btn btn--black">Browse All Products</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PHOTOS — full gallery of every strain photo, with lightbox
+     ============================================================ -->
+<section class="photos" id="photos" aria-labelledby="photos-heading">
+  <div class="photos__inner">
+
+    <div class="photos__header">
+      <p class="section-label">The Harvest</p>
+      <h2 id="photos-heading" class="section-heading">Photos</h2>
+    </div>
+
+    <div class="photos__carousel">
+      <button type="button" class="photos__arrow photos__arrow--prev" (click)="scrollPhotos(-1)" aria-label="Scroll photos left">&#8249;</button>
+
+      <div class="photos__track" #photosTrack>
+        @for (photo of photos; track photo.src; let i = $index) {
+          <button
+            type="button"
+            class="photos__item"
+            [class.photos__item--group-start]="photo.isGroupStart"
+            (click)="openPhoto(i)"
+            [attr.aria-label]="'View larger — ' + photo.alt"
+          >
+            @if (photo.isGroupStart) {
+              <span class="photos__label">{{ photo.strain }}</span>
+            }
+            <img [src]="photo.src" [alt]="photo.alt" class="photos__img" loading="lazy">
+          </button>
         }
       </div>
 
-    </article>
-  }
+      <button type="button" class="photos__arrow photos__arrow--next" (click)="scrollPhotos(1)" aria-label="Scroll photos right">&#8250;</button>
+    </div>
 
-  <div class="products-cta">
-    <!-- TODO: Update href to real products/merch page URL -->
-    <a href="#" class="btn btn--black">Browse All Products</a>
   </div>
-
 </section>
+
+@if (activePhotoIndex !== null) {
+  <div
+    class="lightbox"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="photos[activePhotoIndex].alt"
+    tabindex="-1"
+    (keydown)="onLightboxKeydown($event)"
+    (click)="closePhoto()"
+    #lightboxEl
+  >
+    <button type="button" class="lightbox__close" (click)="closePhoto()" aria-label="Close">&times;</button>
+
+    <button type="button" class="lightbox__nav lightbox__nav--prev" (click)="prevPhoto(); $event.stopPropagation()" aria-label="Previous photo">&#8249;</button>
+
+    <img
+      [src]="photos[activePhotoIndex].src"
+      [alt]="photos[activePhotoIndex].alt"
+      class="lightbox__img"
+      (click)="$event.stopPropagation()"
+    >
+
+    <button type="button" class="lightbox__nav lightbox__nav--next" (click)="nextPhoto(); $event.stopPropagation()" aria-label="Next photo">&#8250;</button>
+
+    <p class="lightbox__counter">{{ activePhotoIndex + 1 }} / {{ photos.length }}</p>
+  </div>
+}
 
 
 <!-- ============================================================

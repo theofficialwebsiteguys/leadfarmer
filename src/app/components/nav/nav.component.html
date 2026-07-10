@@ -1,5 +1,9 @@
 <nav class="nav" [class.scrolled]="scrolled" [class.menu-open]="menuOpen" role="navigation" aria-label="Main navigation">
 
+  <!-- Fades out once scrolled (nav goes solid white); keeps the logo/links
+       legible over whatever frame of the hero video is playing behind it -->
+  <div class="nav__scrim" aria-hidden="true"></div>
+
   <a href="/" class="nav__logo-link" aria-label="Lead Farmer — home">
     <img
       src="assets/brand/brand-head.png"
@@ -11,7 +15,8 @@
   <!-- Desktop links -->
   <ul class="nav__links" role="list">
     <li><a href="#about"    class="nav__link">Story</a></li>
-    <li><a href="#products" class="nav__link">Products</a></li>
+    <li><a href="#strains"  class="nav__link">Strains</a></li>
+    <li><a href="#photos"   class="nav__link">Photos</a></li>
     <li><a href="#articles" class="nav__link">Articles</a></li>
     <li><a href="#contact"  class="nav__link">Contact</a></li>
   </ul>
@@ -30,7 +35,7 @@
     <span class="nav__bar" aria-hidden="true"></span>
   </button>
 
-  <!-- Mobile menu panel -->
+  <!-- Mobile menu — full-screen takeover -->
   <div
     id="nav-mobile-menu"
     class="nav__mobile-menu"
@@ -38,7 +43,8 @@
     role="menu"
   >
     <a href="#about"    class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Story</a>
-    <a href="#products" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Products</a>
+    <a href="#strains"  class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Strains</a>
+    <a href="#photos"   class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Photos</a>
     <a href="#articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Articles</a>
     <a href="#contact"  class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Contact</a>
   </div>

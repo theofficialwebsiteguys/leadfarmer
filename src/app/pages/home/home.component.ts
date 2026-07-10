@@ -1,5 +1,6 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { Component, AfterViewInit, ElementRef, Inject, ViewChild } from '@angular/core';
+import { DatePipe, DOCUMENT, UpperCasePipe } from '@angular/common';
+import { ProductCarouselComponent } from '../../components/product-carousel/product-carousel.component';
 
 interface ProductImage {
   label: string;
@@ -15,6 +16,13 @@ interface Product {
   availableForms: string[];
 }
 
+interface Photo {
+  src: string;
+  alt: string;
+  strain: string;
+  isGroupStart: boolean; // first photo of this strain in the flattened list — used for the light label/divider
+}
+
 // Replace with API/CMS data when available
 interface Article {
   id: number;
@@ -28,13 +36,17 @@ interface Article {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [DatePipe, UpperCasePipe],
+  imports: [DatePipe, UpperCasePipe, ProductCarouselComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements AfterViewInit {
-  @ViewChild('heroVideo') private heroVideoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('heroVideo') private readonly heroVideoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('lightboxEl') private readonly lightboxElRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('photosTrack') private readonly photosTrackRef?: ElementRef<HTMLDivElement>;
   readonly currentYear = new Date().getFullYear();
+
+  constructor(@Inject(DOCUMENT) private readonly document: Document) {}
 
   ngAfterViewInit(): void {
     const video = this.heroVideoRef?.nativeElement;
@@ -42,16 +54,6 @@ export class HomeComponent implements AfterViewInit {
       video.muted = true;
       video.play().catch(() => {});
     }
-  }
-
-  private readonly selectedImages = new Map<number, number>();
-
-  getSelectedIndex(productId: number): number {
-    return this.selectedImages.get(productId) ?? 0;
-  }
-
-  selectImage(productId: number, index: number): void {
-    this.selectedImages.set(productId, index);
   }
 
   // TODO: Replace with real contact details
@@ -160,6 +162,53 @@ export class HomeComponent implements AfterViewInit {
       availableForms: ['Infused Preroll', 'Kief-Rolled']
     }
   ];
+
+  // Every product photo in one flat list, for the Photos carousel + lightbox
+  readonly photos: Photo[] = this.products.flatMap(product =>
+    product.images.map((image, i) => ({
+      src: image.src,
+      alt: `${product.name} — ${image.label}`,
+      strain: product.name,
+      isGroupStart: i === 0
+    }))
+  );
+
+  scrollPhotos(direction: 1 | -1): void {
+    const track = this.photosTrackRef?.nativeElement;
+    if (!track) return;
+    track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: 'smooth' });
+  }
+
+  activePhotoIndex: number | null = null;
+
+  openPhoto(index: number): void {
+    this.activePhotoIndex = index;
+    this.document.body.style.overflow = 'hidden';
+    setTimeout(() => this.lightboxElRef?.nativeElement.focus());
+  }
+
+  closePhoto(): void {
+    this.activePhotoIndex = null;
+    this.document.body.style.overflow = '';
+  }
+
+  nextPhoto(): void {
+    if (this.activePhotoIndex === null) return;
+    this.activePhotoIndex = (this.activePhotoIndex + 1) % this.photos.length;
+  }
+
+  prevPhoto(): void {
+    if (this.activePhotoIndex === null) return;
+    this.activePhotoIndex = (this.activePhotoIndex - 1 + this.photos.length) % this.photos.length;
+  }
+
+  onLightboxKeydown(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'Escape': this.closePhoto(); break;
+      case 'ArrowRight': this.nextPhoto(); break;
+      case 'ArrowLeft': this.prevPhoto(); break;
+    }
+  }
 
   // TODO: Replace with real article data from CMS/API
   readonly articles: Article[] = [

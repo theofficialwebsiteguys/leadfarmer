@@ -22,9 +22,27 @@
     }
 
     .nav__bar { background: var(--color-black); }
+
+    .nav__scrim { opacity: 0; }
+  }
+
+  // Taller than the nav bar itself so it fades out over the video below it,
+  // not just within the nav's own padding box
+  &__scrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.22) 55%, transparent 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
   }
 
   &__logo-link {
+    position: relative;
+    z-index: 95; // stay above the full-screen mobile menu (z-index: 90) while it's open
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -69,6 +87,8 @@
   /* ---- Hamburger ---- */
   &__hamburger {
     display: none;
+    position: relative;
+    z-index: 95; // stay above the full-screen mobile menu (z-index: 90) so it still works as the close control
     flex-direction: column;
     justify-content: center;
     gap: 5px;
@@ -93,35 +113,55 @@
   &.menu-open .nav__bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
   &.menu-open.scrolled .nav__bar     { background: var(--color-black); }
 
-  /* ---- Mobile menu ---- */
+  /* ---- Mobile menu — full-screen takeover ---- */
   &__mobile-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    position: fixed;
+    inset: 0;
+    z-index: 90; // below the nav bar itself (100) so the hamburger/X stays clickable on top
     background: var(--color-black);
-    padding: 1.5rem var(--container-pad) 2rem;
+    display: flex;
     flex-direction: column;
-    gap: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.35s ease, visibility 0s linear 0.35s;
 
-    &.open { display: flex; }
+    &.open {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
   }
 
   &__mobile-link {
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 9vw, 3.25rem);
+    letter-spacing: 0.03em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0;
+    opacity: 0;
+    transition: opacity 0.35s ease, color 0.2s ease;
+    // Forces a pixel-snapped compositing layer — without this, this large
+    // white-on-black text renders with color-fringed antialiasing on this
+    // nested fixed-position overlay
+    transform: translateZ(0);
+    backface-visibility: hidden;
 
-    &:last-child { border-bottom: none; }
     &:hover { color: #fff; }
     &:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+  }
+
+  // Staggered entrance once the menu opens
+  &__mobile-menu.open &__mobile-link {
+    opacity: 1;
+
+    @for $i from 1 through 5 {
+      &:nth-child(#{$i}) { transition-delay: #{$i * 0.06}s; }
+    }
   }
 
   @media (max-width: 768px) {

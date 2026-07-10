@@ -226,55 +226,56 @@
 
 
 // ============================================================
-// PRODUCTS — editorial alternating feature layout
+// STRAINS — compact card grid
 // ============================================================
 
-.products-header {
+.strains {
   background: var(--color-white);
-  padding: var(--spacing-section) var(--container-pad) 0;
+  padding: var(--spacing-section) 0;
 
   &__inner {
     max-width: var(--max-width);
     margin: 0 auto;
+    padding: 0 var(--container-pad);
+  }
+
+  &__header {
     padding-bottom: 2.5rem;
+    margin-bottom: 3rem;
     border-bottom: 1px solid var(--color-border);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem 2rem;
+  }
+
+  &__cta {
+    text-align: center;
+    margin-top: 3.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    &__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    &__grid { grid-template-columns: 1fr; }
   }
 }
 
-.product-feature {
-  display: flex;
-  align-items: flex-start;
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
+.strain-card {
 
-  &--flipped { flex-direction: row-reverse; }
-
-  // Let portrait images breathe at their natural dimensions — no cropping
-  &__image-wrap {
-    width: 50%;
-    flex-shrink: 0;
-    overflow: hidden; // clips hover scale
-  }
-
-  &__image {
+  &__media {
+    position: relative;
     width: 100%;
-    height: auto; // natural portrait ratio, no clipping
-    display: block;
-    transition: transform 0.6s ease;
-
-    .product-feature:hover & { transform: scale(1.03); }
+    aspect-ratio: 4 / 5;
+    background: #111;
   }
 
-  // Sticky so product info stays in view while the tall image scrolls past
-  &__content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: clamp(3rem, 5vw, 5rem) clamp(2rem, 4vw, 4.5rem);
-    position: sticky;
-    top: 5.5rem; // clears fixed nav
-    align-self: flex-start;
+  &__body {
+    padding-top: 1.25rem;
   }
 
   &__type {
@@ -284,73 +285,110 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-muted);
-    margin-bottom: 0.625rem;
+    margin-bottom: 0.5rem;
   }
 
   &__name {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 4.5vw, 4.5rem);
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
     line-height: 1;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: var(--color-black);
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
   }
 
   &__desc {
     font-family: var(--font-body);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 300;
-    line-height: 1.85;
+    line-height: 1.7;
     color: #3a3a3a;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
+
+    // Clamp to keep cards a uniform height regardless of description length
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  &__selector {
-    border-top: 1px solid var(--color-border);
-    padding-top: 1.125rem;
-    margin-top: auto;
-  }
-
-  &__selector-label {
-    display: block;
-    font-family: var(--font-body);
-    font-size: 0.5625rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin-bottom: 0.75rem;
-  }
-
-  &__selector-list {
+  &__forms {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     list-style: none;
   }
 
-  &__selector-btn {
+  &__form {
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-black);
+    color: var(--color-muted);
     background: var(--color-off-white);
-    border: 1.5px solid transparent;
-    padding: 0.4rem 0.875rem;
+    border: 1px solid var(--color-border);
+    padding: 0.3rem 0.7rem;
+  }
+}
+
+
+// ============================================================
+// PHOTOS — full gallery of every strain photo
+// ============================================================
+
+.photos {
+  background: var(--color-off-white);
+  padding: var(--spacing-section) 0;
+
+  &__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-pad);
+  }
+
+  &__header {
+    padding-bottom: 2.5rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__track {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--container-pad);
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &__item {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(200px, 42vw, 320px);
+    aspect-ratio: 4 / 5;
+    padding: 0;
+    border: none;
+    background: #111;
+    overflow: hidden;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    scroll-snap-align: start;
 
-    &.is-active {
-      background: var(--color-black);
-      color: var(--color-white);
-    }
-
-    &:hover:not(.is-active) {
-      border-color: var(--color-black);
-    }
+    // Light separation between strains — a touch of extra breathing room,
+    // not a hard section break, to keep the strip feeling like one whole
+    &--group-start { margin-left: 1.25rem; }
+    &:first-child { margin-left: 0 !important; }
 
     &:focus-visible {
       outline: 2px solid var(--color-black);
@@ -358,25 +396,128 @@
     }
   }
 
-  // Mobile: stack vertically, image full-width at natural portrait height
-  @media (max-width: 860px) {
-    flex-direction: column !important;
-    align-items: stretch;
+  &__label {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1;
+    font-family: var(--font-body);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: rgba(0, 0, 0, 0.55);
+    padding: 0.3rem 0.6rem;
+  }
 
-    &__image-wrap { width: 100%; }
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
 
-    &__content {
-      position: static; // no sticky on mobile
-      padding: 2rem var(--container-pad);
-    }
+    .photos__item:hover & { transform: scale(1.06); }
+  }
+
+  &__arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--color-black);
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover { background: var(--color-black); color: var(--color-white); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+  }
+
+  // Swipe is the primary interaction on mobile — arrows are a desktop convenience
+  @media (max-width: 640px) {
+    &__arrow { display: none; }
   }
 }
 
-.products-cta {
-  background: var(--color-white);
-  padding: 4rem var(--container-pad);
-  text-align: center;
-  border-bottom: 1px solid var(--color-border);
+
+// ============================================================
+// LIGHTBOX
+// ============================================================
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200; // above the fixed nav (z-index: 100)
+  background: rgba(10, 10, 10, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 5rem;
+
+  &__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  &__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.8);
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:hover { color: var(--color-white); }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+
+  &__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.7);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+
+    &:hover { color: var(--color-white); }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+    &--prev { left: 0.5rem; }
+    &--next { right: 0.5rem; }
+  }
+
+  &__counter {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 640px) {
+    padding: 5rem 1.5rem;
+
+    &__nav { font-size: 2.25rem; padding: 0.5rem 0.5rem; }
+  }
 }
 
 
