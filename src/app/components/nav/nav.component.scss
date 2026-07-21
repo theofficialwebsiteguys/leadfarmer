@@ -82,6 +82,15 @@
 
     &:hover { color: #fff; }
     &:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
+    // Specificity note: `.scrolled .nav__link { color }` (below) still wins over this on
+    // the `color` property when scrolled, so the underline persists but the color stays readable.
+    &--active {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-thickness: 1.5px;
+    }
   }
 
   /* ---- Hamburger ---- */
@@ -111,7 +120,11 @@
   &.menu-open .nav__bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
   &.menu-open .nav__bar:nth-child(2) { opacity: 0; }
   &.menu-open .nav__bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-  &.menu-open.scrolled .nav__bar     { background: var(--color-black); }
+
+  // The mobile menu's backdrop is always black, even when the nav bar itself is in its
+  // solid/"scrolled" state — so the X (this same element, rotated) must stay light here,
+  // overriding the `.scrolled .nav__bar { background: black }` rule above.
+  &.menu-open.scrolled .nav__bar { background: rgba(255, 255, 255, 0.9); }
 
   /* ---- Mobile menu — full-screen takeover ---- */
   &__mobile-menu {
@@ -153,6 +166,12 @@
 
     &:hover { color: #fff; }
     &:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+    &--active {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
   }
 
   // Staggered entrance once the menu opens

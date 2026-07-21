@@ -1,0 +1,61 @@
+@if (strain) {
+  <div class="strain-detail">
+
+    <nav class="breadcrumb strain-detail__breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/strains" class="breadcrumb__link">All Strains</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span class="breadcrumb__current" aria-current="page">{{ strain.name }}</span>
+    </nav>
+
+    <app-product-hero [strain]="strain" [focusLabel]="focusImageLabel" />
+
+    <div class="strain-detail__sections">
+
+      <section class="strain-detail__section" aria-labelledby="overview-heading">
+        <p class="section-label">Overview</p>
+        <h2 id="overview-heading" class="strain-detail__section-heading">Strain Overview</h2>
+        <app-product-specifications [strain]="strain" />
+      </section>
+
+      @if (strain.flavors?.length || strain.aromas?.length || strain.effects?.length) {
+        <section class="strain-detail__section" aria-labelledby="flavor-heading">
+          <p class="section-label">Tasting Notes</p>
+          <h2 id="flavor-heading" class="strain-detail__section-heading">Flavor &amp; Experience</h2>
+          <app-flavor-profile [flavors]="strain.flavors" [aromas]="strain.aromas" [effects]="strain.effects" />
+        </section>
+      }
+
+      @if (strain.formats.length) {
+        <section class="strain-detail__section" aria-labelledby="formats-heading">
+          <p class="section-label">Choose a Format</p>
+          <h2 id="formats-heading" class="strain-detail__section-heading">Available Formats</h2>
+          <app-product-format-selector
+            [formats]="strain.formats"
+            [selected]="selectedFormat"
+            (selectedChange)="selectFormat($event)"
+          />
+        </section>
+      }
+
+      <section class="strain-detail__section" id="availability" aria-labelledby="availability-heading">
+        <p class="section-label">Where to Find It</p>
+        <h2 id="availability-heading" class="strain-detail__section-heading">Availability</h2>
+        <app-retailer-availability [retailers]="strain.retailers" [strainName]="strain.name" />
+      </section>
+
+    </div>
+
+    <app-related-strains [strains]="relatedStrains" />
+
+  </div>
+} @else {
+  <div class="strain-detail strain-detail--not-found">
+    <h1 class="visually-hidden">Strain Not Found</h1>
+    <app-empty-catalog-state
+      heading="Strain Not Found"
+      message="We couldn't find that strain. It may have been renamed or is no longer available."
+      actionLabel="Browse All Strains"
+      actionLink="/strains"
+    />
+  </div>
+}

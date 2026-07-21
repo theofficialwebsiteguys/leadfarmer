@@ -1,0 +1,10 @@
+@if (rows.length) {
+  <dl class="product-specs">
+    @for (row of rows; track row.label) {
+      <div class="product-specs__row">
+        <dt class="product-specs__label">{{ row.label }}</dt>
+        <dd class="product-specs__value">{{ row.value }}</dd>
+      </div>
+    }
+  </dl>
+}

@@ -1,0 +1,52 @@
+.flavor-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__label {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-black);
+    background: var(--color-off-white);
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 0.9rem;
+
+    // Effects get an inverted treatment so experience reads distinctly from taste/smell
+    &--effect {
+      background: var(--color-black);
+      color: var(--color-white);
+      border-color: var(--color-black);
+
+      .flavor-profile__dot { background: var(--color-white); }
+    }
+  }
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-black);
+    flex-shrink: 0;
+  }
+}

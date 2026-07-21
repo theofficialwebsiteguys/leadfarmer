@@ -1,0 +1,171 @@
+.product-gallery {
+
+  &__main {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #111;
+  }
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+
+    &.is-active { opacity: 1; }
+  }
+
+  &__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--color-black);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: #fff; }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    &--prev { left: 0.75rem; }
+    &--next { right: 0.75rem; }
+  }
+
+  &__expand {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--color-black);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    svg { width: 16px; height: 16px; }
+
+    &:hover { background: #fff; }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  }
+
+  &__thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-top: 0.875rem;
+  }
+
+  &__thumb {
+    width: 4rem;
+    height: 5rem;
+    padding: 0;
+    border: 1.5px solid transparent;
+    background: #111;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s, border-color 0.2s;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    &:hover { opacity: 0.85; }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+
+    &.is-active {
+      opacity: 1;
+      border-color: var(--color-black);
+    }
+  }
+}
+
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 10, 10, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 5rem;
+
+  &__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  &__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.8);
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:hover { color: #fff; }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+
+  &__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.7);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+
+    &:hover { color: #fff; }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+    &--prev { left: 0.5rem; }
+    &--next { right: 0.5rem; }
+  }
+
+  &__counter {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 640px) {
+    padding: 5rem 1.5rem;
+    &__nav { font-size: 2.25rem; padding: 0.5rem 0.5rem; }
+  }
+}

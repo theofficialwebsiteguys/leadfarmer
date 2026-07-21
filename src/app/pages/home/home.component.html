@@ -18,6 +18,8 @@
 
   <div class="hero__content">
 
+    <h1 class="visually-hidden">Lead Farmer — Southern Tier Cannabis Cultivation</h1>
+
     <img
       src="assets/brand/brand-lettering-white.png"
       alt="Lead Farmer"
@@ -32,7 +34,7 @@
     <p class="hero__scroll" aria-hidden="true">Scroll</p>
 
     <div class="hero__ctas">
-      <a href="#strains" class="btn btn--white">View Strains</a>
+      <a routerLink="/strains" class="btn btn--white">View Strains</a>
       <a href="#articles" class="btn btn--dark">Read Articles</a>
     </div>
 
@@ -84,38 +86,14 @@
       <h2 id="strains-heading" class="section-heading">What We Grow</h2>
     </div>
 
-    <div class="strains__grid">
-      @for (product of products; track product.id) {
-        <article class="strain-card" [attr.aria-labelledby]="'strain-' + product.id">
-
-          <div class="strain-card__media">
-            <app-product-carousel
-              [images]="product.images"
-              [productName]="product.name"
-            ></app-product-carousel>
-          </div>
-
-          <div class="strain-card__body">
-            <p class="strain-card__type">{{ product.type }}</p>
-            <h3 [id]="'strain-' + product.id" class="strain-card__name">
-              {{ product.name }}
-            </h3>
-            <p class="strain-card__desc">{{ product.description }}</p>
-
-            <ul class="strain-card__forms" role="list">
-              @for (form of product.availableForms; track form) {
-                <li class="strain-card__form">{{ form }}</li>
-              }
-            </ul>
-          </div>
-
-        </article>
-      }
-    </div>
+    <app-strain-grid
+      [strains]="strains"
+      [cardHeadingLevel]="3"
+      [cardVariant]="'minimal'"
+    />
 
     <div class="strains__cta">
-      <!-- TODO: Update href to real products/merch page URL -->
-      <a href="#" class="btn btn--black">Browse All Products</a>
+      <a routerLink="/strains" class="btn btn--black">Browse All Strains</a>
     </div>
 
   </div>
@@ -240,7 +218,7 @@
 
 
 <!-- ============================================================
-     CONTACT + FOOTER
+     CONTACT
      ============================================================ -->
 <section class="contact" id="contact" aria-labelledby="contact-heading">
   <div class="contact__inner">
@@ -254,22 +232,11 @@
 
     <h2 id="contact-heading" class="contact__heading">Get In Touch</h2>
 
-    <!-- TODO: Replace with real email address -->
-    <a [href]="'mailto:' + contactEmail" class="contact__email">
-      {{ contactEmail }}
+    <a [href]="'mailto:' + contact.email" class="contact__email">
+      {{ contact.email }}
     </a>
 
-    <!-- TODO: Replace with real address if desired -->
-    <address class="contact__address">{{ contactAddress }}</address>
+    <address class="contact__address">{{ contact.address }}</address>
 
   </div>
 </section>
-
-<footer class="footer" role="contentinfo">
-  <div class="footer__inner">
-    <hr class="footer__rule" aria-hidden="true">
-    <p class="footer__copy">
-      &copy; {{ currentYear }} Lead Farmer. Premium Cannabis Cultivation.
-    </p>
-  </div>
-</footer>

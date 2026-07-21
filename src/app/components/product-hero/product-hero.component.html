@@ -1,0 +1,38 @@
+<section class="product-hero">
+
+  <div class="product-hero__gallery">
+    <app-product-gallery [images]="galleryImages" [productName]="strain.name" [focusLabel]="focusLabel" />
+  </div>
+
+  <div class="product-hero__info">
+    <p class="product-hero__type">{{ strain.classification }}</p>
+    <h1 class="product-hero__name">{{ strain.name }}</h1>
+
+    @if (strain.badges?.length) {
+      <div class="product-hero__badges">
+        @for (badge of strain.badges; track badge) {
+          <span class="product-hero__badge">{{ badge }}</span>
+        }
+      </div>
+    }
+
+    <p class="product-hero__desc">{{ strain.shortDescription }}</p>
+
+    @if (strain.formats.length) {
+      <div class="product-hero__formats">
+        <p class="product-hero__formats-label">Available In</p>
+        <ul class="product-hero__formats-list" role="list">
+          @for (format of strain.formats; track format.name) {
+            <li class="product-hero__format">{{ format.name }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="product-hero__ctas">
+      <a href="#availability" class="btn btn--black">Where to Find It</a>
+      <a [href]="wholesaleMailto" class="btn btn--outline">Wholesale Inquiry</a>
+    </div>
+  </div>
+
+</section>

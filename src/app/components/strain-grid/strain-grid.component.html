@@ -1,0 +1,26 @@
+@if (isLoading) {
+  <div class="strain-grid" role="status" aria-label="Loading strains">
+    @for (i of skeletonPlaceholders; track i) {
+      <app-strain-card-skeleton class="strain-grid__item" />
+    }
+  </div>
+} @else if (strains.length === 0) {
+  <app-empty-catalog-state
+    [heading]="emptyHeading"
+    [message]="emptyMessage"
+    [actionLabel]="emptyActionLabel"
+    [actionLink]="emptyActionLink"
+  />
+} @else {
+  <div class="strain-grid">
+    @for (strain of strains; track strain.id) {
+      <app-strain-card
+        class="strain-grid__item"
+        [strain]="strain"
+        [headingLevel]="cardHeadingLevel"
+        [variant]="cardVariant"
+        [revealOnScroll]="cardRevealOnScroll"
+      />
+    }
+  </div>
+}

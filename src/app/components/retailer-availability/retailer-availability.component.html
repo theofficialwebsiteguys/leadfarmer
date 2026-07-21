@@ -1,0 +1,40 @@
+<div class="retailer-availability">
+
+  @if (retailers?.length) {
+    <ul class="retailer-availability__list" role="list">
+      @for (retailer of retailers; track retailer.name) {
+        <li class="retailer-availability__item">
+          <div class="retailer-availability__info">
+            <p class="retailer-availability__name">{{ retailer.name }}</p>
+            <p class="retailer-availability__location">
+              {{ retailer.city }}{{ retailer.region ? ', ' + retailer.region : '' }}
+            </p>
+          </div>
+
+          @if (retailer.url) {
+            <a
+              [href]="retailer.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="retailer-availability__link"
+              [attr.aria-label]="'Visit ' + retailer.name + ' website (opens in a new tab)'"
+            >Visit / Directions</a>
+          }
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="retailer-availability__empty">
+      Availability information coming soon. Reach out and we'll help you track down {{ strainName }}.
+    </p>
+  }
+
+  <p class="retailer-availability__disclaimer">
+    Availability varies by location and changes regularly — contact us to confirm current stock before visiting.
+  </p>
+
+  <a [href]="mailtoHref" class="btn btn--outline retailer-availability__cta">
+    Contact Us About Availability
+  </a>
+
+</div>

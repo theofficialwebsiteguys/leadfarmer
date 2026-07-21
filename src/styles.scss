@@ -74,3 +74,141 @@ address {
     top: 1rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Paired with RevealOnScrollDirective — fades/slides an element in the first time it
+// scrolls into view. Reduced-motion users still get the content, just without the animation.
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+
+  &.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================================
+// SHARED PRIMITIVES — used across Home, Strains catalog, and
+// strain detail pages. Keep anything here page-agnostic.
+// ============================================================
+
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 0.625rem;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--color-black);
+  text-transform: uppercase;
+}
+
+// ---- Buttons ----
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  letter-spacing: 0.08em;
+  padding: 0.875rem 2.5rem;
+  border: 2px solid transparent;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+  &--white {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-color: var(--color-white);
+    &:hover { background: transparent; color: var(--color-white); }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+
+  &--dark {
+    background: transparent;
+    color: var(--color-white);
+    border-color: rgba(255, 255, 255, 0.5);
+    &:hover { background: var(--color-white); color: var(--color-black); border-color: var(--color-white); }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+
+  &--black {
+    background: var(--color-black);
+    color: var(--color-white);
+    border-color: var(--color-black);
+    &:hover { background: transparent; color: var(--color-black); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--color-black);
+    border-color: var(--color-black);
+    &:hover { background: var(--color-black); color: var(--color-white); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+  }
+
+  &:disabled, &[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ---- Breadcrumb (detail pages) ----
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  &__link {
+    color: var(--color-muted);
+    text-decoration: none;
+    &:hover { color: var(--color-black); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
+  }
+
+  &__sep {
+    color: var(--color-border);
+  }
+
+  &__current {
+    color: var(--color-black);
+  }
+}
+
+// ---- Visually hidden (screen-reader only) ----
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

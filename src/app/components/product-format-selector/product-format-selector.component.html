@@ -1,0 +1,20 @@
+<div class="format-selector" role="radiogroup" aria-label="Available formats">
+  @for (format of formats; track format.name; let i = $index) {
+    <div class="format-selector__option">
+      <input
+        type="radio"
+        [id]="'format-option-' + i"
+        name="product-format"
+        class="format-selector__input"
+        [value]="format.name"
+        [checked]="format.name === selected"
+        (change)="select(format.name)"
+      >
+      <label [for]="'format-option-' + i" class="format-selector__label">{{ format.name }}</label>
+    </div>
+  }
+</div>
+
+@if (selectedDescription) {
+  <p class="format-selector__description">{{ selectedDescription }}</p>
+}

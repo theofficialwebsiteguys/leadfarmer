@@ -1,0 +1,47 @@
+<section class="strain-catalog">
+  <div class="strain-catalog__inner">
+
+    <div class="strain-catalog__header">
+      <p class="section-label">The Full Menu</p>
+      <h1 class="section-heading">Strains</h1>
+      <p class="strain-catalog__intro">
+        Browse every strain currently in rotation. Filter by type or format, or search by name.
+      </p>
+    </div>
+
+    <div class="strain-catalog__controls">
+      <app-strain-search [value]="search" (valueChange)="onSearchChange($event)" />
+
+      <app-strain-filters
+        [classifications]="facets.classifications"
+        [formats]="facets.formats"
+        [badges]="facets.badges"
+        [selectedTypes]="types"
+        [selectedFormats]="formats"
+        [selectedBadges]="badges"
+        [sort]="sort"
+        [hasActiveFilters]="hasActiveFilters"
+        (typesChange)="onTypesChange($event)"
+        (formatsChange)="onFormatsChange($event)"
+        (badgesChange)="onBadgesChange($event)"
+        (sortChange)="onSortChange($event)"
+        (reset)="resetFilters()"
+      />
+    </div>
+
+    <p class="strain-catalog__count" aria-live="polite">
+      Showing {{ results.length }} of {{ totalCount }} strains
+    </p>
+
+    <app-strain-grid
+      [strains]="results"
+      [cardHeadingLevel]="2"
+      [cardRevealOnScroll]="false"
+      emptyHeading="No Strains Match"
+      emptyMessage="Try a different search term, or reset your filters to see the full menu."
+      emptyActionLabel="Reset Filters"
+      emptyActionLink="/strains"
+    />
+
+  </div>
+</section>

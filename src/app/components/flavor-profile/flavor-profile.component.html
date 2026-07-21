@@ -1,0 +1,44 @@
+@if (hasContent) {
+  <div class="flavor-profile">
+
+    @if (flavors?.length) {
+      <div class="flavor-profile__group">
+        <p class="flavor-profile__label">Flavor</p>
+        <ul class="flavor-profile__tags" role="list">
+          @for (tag of flavors; track tag) {
+            <li class="flavor-profile__tag">
+              <span class="flavor-profile__dot" aria-hidden="true"></span>{{ tag }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (aromas?.length) {
+      <div class="flavor-profile__group">
+        <p class="flavor-profile__label">Aroma</p>
+        <ul class="flavor-profile__tags" role="list">
+          @for (tag of aromas; track tag) {
+            <li class="flavor-profile__tag">
+              <span class="flavor-profile__dot" aria-hidden="true"></span>{{ tag }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (effects?.length) {
+      <div class="flavor-profile__group">
+        <p class="flavor-profile__label">Effects</p>
+        <ul class="flavor-profile__tags" role="list">
+          @for (tag of effects; track tag) {
+            <li class="flavor-profile__tag flavor-profile__tag--effect">
+              <span class="flavor-profile__dot" aria-hidden="true"></span>{{ tag }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+  </div>
+}

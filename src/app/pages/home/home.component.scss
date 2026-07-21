@@ -1,66 +1,4 @@
 // ============================================================
-// SHARED UTILITIES
-// ============================================================
-
-.section-label {
-  font-family: var(--font-body);
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  margin-bottom: 0.625rem;
-}
-
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--color-black);
-  text-transform: uppercase;
-}
-
-// ---- Buttons ----
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 1.0625rem;
-  letter-spacing: 0.08em;
-  padding: 0.875rem 2.5rem;
-  border: 2px solid transparent;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-
-  &--white {
-    background: var(--color-white);
-    color: var(--color-black);
-    border-color: var(--color-white);
-    &:hover { background: transparent; color: var(--color-white); }
-    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-  }
-
-  &--dark {
-    background: transparent;
-    color: var(--color-white);
-    border-color: rgba(255, 255, 255, 0.5);
-    &:hover { background: var(--color-white); color: var(--color-black); border-color: var(--color-white); }
-    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-  }
-
-  &--black {
-    background: var(--color-black);
-    color: var(--color-white);
-    border-color: var(--color-black);
-    &:hover { background: transparent; color: var(--color-black); }
-    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 3px; }
-  }
-}
-
-
-// ============================================================
 // HERO
 // ============================================================
 
@@ -245,91 +183,9 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem 2rem;
-  }
-
   &__cta {
     text-align: center;
     margin-top: 3.5rem;
-  }
-
-  @media (max-width: 1024px) {
-    &__grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 640px) {
-    &__grid { grid-template-columns: 1fr; }
-  }
-}
-
-.strain-card {
-
-  &__media {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    background: #111;
-  }
-
-  &__body {
-    padding-top: 1.25rem;
-  }
-
-  &__type {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin-bottom: 0.5rem;
-  }
-
-  &__name {
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
-    line-height: 1;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--color-black);
-    margin-bottom: 0.75rem;
-  }
-
-  &__desc {
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    font-weight: 300;
-    line-height: 1.7;
-    color: #3a3a3a;
-    margin-bottom: 1rem;
-
-    // Clamp to keep cards a uniform height regardless of description length
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  &__forms {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-  }
-
-  &__form {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    background: var(--color-off-white);
-    border: 1px solid var(--color-border);
-    padding: 0.3rem 0.7rem;
   }
 }
 
@@ -695,38 +551,5 @@
     font-weight: 300;
     color: rgba(255, 255, 255, 0.45);
     font-style: normal;
-  }
-}
-
-
-// ============================================================
-// FOOTER
-// ============================================================
-
-.footer {
-  background: var(--color-black);
-  padding: 0 var(--container-pad) 3rem;
-
-  &__inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  &__rule {
-    width: 100%;
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  &__copy {
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.3);
   }
 }

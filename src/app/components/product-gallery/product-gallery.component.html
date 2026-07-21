@@ -1,0 +1,82 @@
+<div class="product-gallery">
+
+  <div class="product-gallery__main">
+    @for (img of images; track img.src; let i = $index) {
+      <img
+        class="product-gallery__img"
+        [class.is-active]="i === currentIndex"
+        [src]="img.src"
+        [alt]="img.alt"
+      >
+    }
+
+    @if (!isSingle) {
+      <button type="button" class="product-gallery__arrow product-gallery__arrow--prev" (click)="prev()" aria-label="Previous image">&#8249;</button>
+      <button type="button" class="product-gallery__arrow product-gallery__arrow--next" (click)="next()" aria-label="Next image">&#8250;</button>
+    }
+
+    <button #expandBtn type="button" class="product-gallery__expand" (click)="openLightbox()" aria-label="View full screen">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M7.5 2.5H3a.5.5 0 0 0-.5.5v4.5M12.5 2.5H17a.5.5 0 0 1 .5.5v4.5M17.5 12.5V17a.5.5 0 0 1-.5.5h-4.5M2.5 12.5V17a.5.5 0 0 0 .5.5h4.5"
+          stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <p class="visually-hidden" aria-live="polite">
+      @if (activeImage) {
+        Showing image {{ currentIndex + 1 }} of {{ images.length }}: {{ activeImage.label || activeImage.alt }}
+      }
+    </p>
+  </div>
+
+  @if (!isSingle) {
+    <div class="product-gallery__thumbs">
+      @for (img of images; track img.src; let i = $index) {
+        <button
+          type="button"
+          class="product-gallery__thumb"
+          [class.is-active]="i === currentIndex"
+          [attr.aria-pressed]="i === currentIndex"
+          [attr.aria-label]="'View image — ' + (img.label || img.alt)"
+          (click)="goTo(i)"
+        >
+          <img [src]="img.src" alt="" loading="lazy">
+        </button>
+      }
+    </div>
+  }
+
+</div>
+
+@if (lightboxOpen) {
+  <div
+    class="gallery-lightbox"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="(activeImage?.alt || productName) + ' — full screen'"
+    tabindex="-1"
+    (keydown)="onLightboxKeydown($event)"
+    (click)="closeLightbox()"
+    #lightboxEl
+  >
+    <button type="button" class="gallery-lightbox__close" (click)="closeLightbox()" aria-label="Close full screen view">&times;</button>
+
+    @if (!isSingle) {
+      <button type="button" class="gallery-lightbox__nav gallery-lightbox__nav--prev" (click)="prev(); $event.stopPropagation()" aria-label="Previous image">&#8249;</button>
+    }
+
+    @if (activeImage) {
+      <img
+        [src]="activeImage.src"
+        [alt]="activeImage.alt"
+        class="gallery-lightbox__img"
+        (click)="$event.stopPropagation()"
+      >
+    }
+
+    @if (!isSingle) {
+      <button type="button" class="gallery-lightbox__nav gallery-lightbox__nav--next" (click)="next(); $event.stopPropagation()" aria-label="Next image">&#8250;</button>
+      <p class="gallery-lightbox__counter">{{ currentIndex + 1 }} / {{ images.length }}</p>
+    }
+  </div>
+}

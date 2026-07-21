@@ -1,0 +1,57 @@
+.strain-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &__icon {
+    position: absolute;
+    left: 0.9rem;
+    width: 15px;
+    height: 15px;
+    color: var(--color-muted);
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-black);
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: 0.75rem 2.5rem;
+    transition: border-color 0.2s;
+
+    &::placeholder { color: var(--color-muted); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+    &:focus { border-color: var(--color-black); }
+
+    // Custom clear button below replaces the native ones for a consistent look
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      appearance: none;
+    }
+  }
+
+  &__clear {
+    position: absolute;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--color-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:hover { color: var(--color-black); }
+    &:focus-visible { outline: 2px solid var(--color-black); outline-offset: 2px; }
+  }
+}

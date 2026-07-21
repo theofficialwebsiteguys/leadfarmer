@@ -1,0 +1,99 @@
+<div class="strain-filters">
+
+  <!-- <div class="strain-filters__bar">
+    <button
+      type="button"
+      class="strain-filters__toggle"
+      (click)="toggleMobilePanel()"
+      [attr.aria-expanded]="mobileOpen"
+      aria-controls="strain-filters-panel"
+    >
+      Filters
+      @if (selectedCount > 0) {
+        <span class="strain-filters__count-badge">{{ selectedCount }}</span>
+      }
+    </button>
+
+    <label class="strain-filters__sort">
+      <span class="strain-filters__sort-label">Sort</span>
+      <select
+        class="strain-filters__sort-select"
+        aria-label="Sort strains"
+        [ngModel]="sort"
+        (ngModelChange)="sortChange.emit($event)"
+      >
+        <option value="featured">Featured</option>
+        <option value="newest">Newest</option>
+        <option value="az">A–Z</option>
+      </select>
+    </label>
+
+    @if (hasActiveFilters) {
+      <button type="button" class="strain-filters__reset" (click)="reset.emit()">
+        Reset Filters
+      </button>
+    }
+  </div> -->
+
+  <div id="strain-filters-panel" class="strain-filters__panel" [class.is-open]="mobileOpen">
+
+    @if (classifications.length) {
+      <div class="strain-filters__group">
+        <p class="strain-filters__group-label">Type</p>
+        <div class="strain-filters__chips" role="group" aria-label="Filter by strain type">
+          <button
+            type="button"
+            class="strain-filters__chip"
+            [class.is-active]="selectedTypes.length === 0"
+            (click)="clearTypes()"
+          >All Strains</button>
+
+          @for (option of classifications; track option.value) {
+            <button
+              type="button"
+              class="strain-filters__chip"
+              [class.is-active]="selectedTypes.includes(option.value)"
+              [attr.aria-pressed]="selectedTypes.includes(option.value)"
+              (click)="toggleType(option.value)"
+            >{{ option.value }} <span class="strain-filters__chip-count">{{ option.count }}</span></button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (formats.length) {
+      <div class="strain-filters__group">
+        <p class="strain-filters__group-label">Format</p>
+        <div class="strain-filters__chips" role="group" aria-label="Filter by available format">
+          @for (option of formats; track option.value) {
+            <button
+              type="button"
+              class="strain-filters__chip"
+              [class.is-active]="selectedFormats.includes(option.value)"
+              [attr.aria-pressed]="selectedFormats.includes(option.value)"
+              (click)="toggleFormat(option.value)"
+            >{{ option.value }} <span class="strain-filters__chip-count">{{ option.count }}</span></button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (badges.length) {
+      <div class="strain-filters__group">
+        <p class="strain-filters__group-label">Collection</p>
+        <div class="strain-filters__chips" role="group" aria-label="Filter by collection">
+          @for (option of badges; track option.value) {
+            <button
+              type="button"
+              class="strain-filters__chip"
+              [class.is-active]="selectedBadges.includes(option.value)"
+              [attr.aria-pressed]="selectedBadges.includes(option.value)"
+              (click)="toggleBadge(option.value)"
+            >{{ option.value }} <span class="strain-filters__chip-count">{{ option.count }}</span></button>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

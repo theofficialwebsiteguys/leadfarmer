@@ -1,0 +1,10 @@
+.related-strains {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 3.5rem) var(--container-pad) var(--spacing-section);
+  border-top: 1px solid var(--color-border);
+
+  &__heading {
+    margin-bottom: 2.5rem;
+  }
+}

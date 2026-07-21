@@ -4,7 +4,7 @@
        legible over whatever frame of the hero video is playing behind it -->
   <div class="nav__scrim" aria-hidden="true"></div>
 
-  <a href="/" class="nav__logo-link" aria-label="Lead Farmer — home">
+  <a routerLink="/" class="nav__logo-link" aria-label="Lead Farmer — home">
     <img
       src="assets/brand/brand-head.png"
       alt="Lead Farmer"
@@ -14,11 +14,18 @@
 
   <!-- Desktop links -->
   <ul class="nav__links" role="list">
-    <li><a href="#about"    class="nav__link">Story</a></li>
-    <li><a href="#strains"  class="nav__link">Strains</a></li>
-    <li><a href="#photos"   class="nav__link">Photos</a></li>
-    <li><a href="#articles" class="nav__link">Articles</a></li>
-    <li><a href="#contact"  class="nav__link">Contact</a></li>
+    <li><a routerLink="/" fragment="about" class="nav__link">Story</a></li>
+    <li>
+      <a
+        routerLink="/strains"
+        routerLinkActive="nav__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="nav__link"
+      >Strains</a>
+    </li>
+    <li><a routerLink="/" fragment="photos" class="nav__link">Photos</a></li>
+    <li><a routerLink="/" fragment="articles" class="nav__link">Articles</a></li>
+    <li><a routerLink="/" fragment="contact" class="nav__link">Contact</a></li>
   </ul>
 
   <!-- Mobile hamburger -->
@@ -42,11 +49,18 @@
     [class.open]="menuOpen"
     role="menu"
   >
-    <a href="#about"    class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Story</a>
-    <a href="#strains"  class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Strains</a>
-    <a href="#photos"   class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Photos</a>
-    <a href="#articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Articles</a>
-    <a href="#contact"  class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Contact</a>
+    <a routerLink="/" fragment="about" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Story</a>
+    <a
+      routerLink="/strains"
+      routerLinkActive="nav__mobile-link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      class="nav__mobile-link"
+      role="menuitem"
+      (click)="closeMenu()"
+    >Strains</a>
+    <a routerLink="/" fragment="photos" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Photos</a>
+    <a routerLink="/" fragment="articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Articles</a>
+    <a routerLink="/" fragment="contact" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Contact</a>
   </div>
 
 </nav>

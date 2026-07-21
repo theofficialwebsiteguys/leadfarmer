@@ -1,0 +1,62 @@
+<a
+  class="strain-card"
+  [class.strain-card--minimal]="variant === 'minimal'"
+  [routerLink]="['/strains', strain.slug]"
+  [appRevealOnScroll]="revealOnScroll"
+>
+
+  <div class="strain-card__media">
+    <img
+      [src]="strain.mainImage.src"
+      alt=""
+      class="strain-card__img"
+      loading="lazy"
+    >
+
+    @if (strain.badges?.length) {
+      <div class="strain-card__badges">
+        @for (badge of strain.badges; track badge) {
+          <span class="strain-card__badge">{{ badge }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  @if (variant === 'minimal') {
+    <div class="strain-card__minimal-body">
+      <span class="strain-card__arrow-btn" aria-hidden="true">&#8594;</span>
+
+      @if (headingLevel === 2) {
+        <h2 class="strain-card__name strain-card__name--minimal">{{ strain.name }}</h2>
+      } @else {
+        <h3 class="strain-card__name strain-card__name--minimal">{{ strain.name }}</h3>
+      }
+
+      <p class="strain-card__type strain-card__type--minimal">{{ strain.classification }}</p>
+    </div>
+  } @else {
+    <div class="strain-card__body">
+      <p class="strain-card__type">{{ strain.classification }}</p>
+
+      @if (headingLevel === 2) {
+        <h2 class="strain-card__name">{{ strain.name }}</h2>
+      } @else {
+        <h3 class="strain-card__name">{{ strain.name }}</h3>
+      }
+
+      <p class="strain-card__desc">{{ strain.shortDescription }}</p>
+
+      <ul class="strain-card__forms" role="list">
+        @for (format of strain.formats; track format.name) {
+          <li class="strain-card__form">{{ format.name }}</li>
+        }
+      </ul>
+
+      <span class="strain-card__cta">
+        Explore Strain
+        <span class="strain-card__arrow" aria-hidden="true">&#8594;</span>
+      </span>
+    </div>
+  }
+
+</a>

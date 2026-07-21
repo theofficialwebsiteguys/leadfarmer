@@ -1,0 +1,37 @@
+.strain-detail {
+
+  &__breadcrumb {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    // Nav is permanently in its solid/"scrolled" state on this route (see NavComponent)
+    // and is position:fixed, so page content needs enough top padding to clear it.
+    padding: clamp(7.5rem, 20vw, 9.5rem) var(--container-pad) 0;
+  }
+
+  &__sections {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-pad);
+  }
+
+  &__section {
+    padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-black);
+    margin-bottom: 2rem;
+  }
+
+  &--not-found {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: clamp(9rem, 22vw, 11rem) var(--container-pad) var(--spacing-section);
+  }
+}

@@ -1,0 +1,28 @@
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.skeleton-card {
+  &__media,
+  &__line {
+    background: var(--color-border);
+    animation: skeleton-pulse 1.6s ease-in-out infinite;
+  }
+
+  &__media {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    margin-bottom: 1.25rem;
+  }
+
+  &__line {
+    height: 0.75rem;
+    margin-bottom: 0.75rem;
+
+    &--type { width: 35%; height: 0.5rem; }
+    &--name { width: 65%; height: 1.5rem; }
+    &--desc { width: 100%; }
+    &--desc-short { width: 80%; }
+  }
+}
