@@ -1,0 +1,28 @@
+.merch {
+  // Nav is permanently in its solid/"scrolled" state on this route (see NavComponent) and
+  // is position:fixed, so page content needs enough top padding to clear it.
+  min-height: 60vh;
+  padding: clamp(7.5rem, 20vw, 9.5rem) 0 var(--spacing-section);
+  display: flex;
+  align-items: center;
+
+  &__inner {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0 var(--container-pad);
+    text-align: center;
+  }
+
+  &__intro {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--color-muted);
+    margin-top: 1rem;
+  }
+
+  &__cta {
+    margin-top: 2.5rem;
+  }
+}
