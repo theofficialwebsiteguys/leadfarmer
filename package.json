@@ -12,7 +12,8 @@
     "dev:api:stop": "docker compose down",
     "dev:api:reset": "docker compose down -v && docker compose up -d",
     "dev:api:logs": "docker compose logs -f api",
-    "dev:create-admin": "docker compose exec api php api/tools/create-admin.php"
+    "dev:create-admin": "docker compose exec api php api/tools/create-admin.php",
+    "build:ghpages": "ng build --configuration ghpages && node tools/finish-ghpages.mjs"
   },
   "private": true,
   "dependencies": {

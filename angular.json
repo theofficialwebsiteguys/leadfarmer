@@ -56,6 +56,26 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "ghpages": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "12kB"
+                }
+              ],
+              "outputHashing": "all",
+              "baseHref": "/leadfarmer/",
+              "outputPath": {
+                "base": "docs",
+                "browser": ""
+              }
             }
           },
           "defaultConfiguration": "production"
