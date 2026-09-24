@@ -1,0 +1,7 @@
+# A real config.php holds database credentials — it belongs outside public_html
+# and must never be committed. config.example.php is the committed template.
+#
+# The leading slash anchors this to api/config.php only. Without it the rule also
+# matched api/lib/Config.php (the class), because git is case-insensitive on
+# Windows and macOS — which would have deployed an API missing its config loader.
+/config.php

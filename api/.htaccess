@@ -1,0 +1,44 @@
+# ============================================================================
+# Lead Farmer API — Apache configuration
+#
+# Sits at public_html/api/.htaccess. Routes every /api/* request to index.php
+# and blocks direct access to source files.
+# ============================================================================
+
+# Optional: point the API at its config file explicitly. If your cPanel account
+# is /home/leadfarm, uncomment and adjust:
+# SetEnv LEADFARMER_CONFIG /home/leadfarm/leadfarmer-config/config.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/
+
+    # Anything that is not a real file or directory goes to the front controller.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Only index.php is reachable over HTTP. Library code, SQL, tooling and any
+# local config.php are served by the filesystem only.
+<FilesMatch "\.(sql|md|json|lock|example\.php)$">
+    Require all denied
+</FilesMatch>
+
+<Files "config.php">
+    Require all denied
+</Files>
+
+# PHP's own upload ceiling still applies on top of the API's configured limit;
+# raise it here if you increase uploads.max_bytes in config.php.
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+</IfModule>
+
+# Responses are JSON and must never be cached by a proxy or the browser —
+# the API sets these too, this is belt and braces for stricter hosts.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+</IfModule>

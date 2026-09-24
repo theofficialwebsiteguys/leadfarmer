@@ -1,0 +1,5 @@
+# Client-uploaded images live here at runtime and are never committed —
+# they are backed up from the server, not from version control.
+*
+!.htaccess
+!.gitignore

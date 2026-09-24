@@ -1,0 +1,7 @@
+# Only setup.php is meant to be reachable over HTTP (and it is inert unless a
+# setup_token is configured). Everything else here is CLI-only.
+Require all denied
+
+<Files "setup.php">
+    Require all granted
+</Files>

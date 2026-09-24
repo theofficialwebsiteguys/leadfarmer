@@ -1,5 +1,11 @@
 .strain-card {
-  display: block;
+  // Grid items stretch to the tallest card in their row by default — flex column +
+  // height: 100% lets the body claim that full height so __cta below can be pinned
+  // to the bottom (see __cta margin-top: auto), keeping it aligned across a row
+  // regardless of how many lines the description or heading wrap to.
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   color: inherit;
   text-decoration: none;
 
@@ -14,6 +20,7 @@
     aspect-ratio: 4 / 5;
     overflow: hidden;
     background: #111;
+    flex-shrink: 0;
   }
 
   &__img {
@@ -29,40 +36,11 @@
     transform: scale(1.05);
   }
 
-  &__badges {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    max-width: calc(100% - 1.5rem);
-  }
-
-  &__badge {
-    font-family: var(--font-body);
-    font-size: 0.5625rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-white);
-    background: rgba(0, 0, 0, 0.65);
-    padding: 0.3rem 0.6rem;
-  }
-
   &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     padding-top: 1.25rem;
-  }
-
-  &__type {
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin-bottom: 0.5rem;
   }
 
   &__name {
@@ -114,6 +92,10 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    // Pins the CTA to the bottom of the (now flex) body, so it lines up across a row
+    // of cards regardless of how much space the name/description take above it.
+    margin-top: auto;
+    align-self: flex-start;
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 600;
@@ -178,10 +160,6 @@
 
   &__name--minimal {
     font-size: clamp(1.875rem, 3.5vw, 2.5rem);
-    margin-bottom: 0.4rem;
-  }
-
-  &__type--minimal {
     margin-bottom: 0;
   }
 }

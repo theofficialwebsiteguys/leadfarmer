@@ -1,0 +1,130 @@
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="story-hero">
+  <img
+    [src]="heroImage.url"
+    [alt]="heroImage.alt"
+    class="story-hero__img"
+    aria-hidden="true"
+  >
+  <div class="story-hero__overlay" aria-hidden="true"></div>
+
+  <div class="story-hero__content">
+    <nav class="breadcrumb story-hero__breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/" class="breadcrumb__link">Home</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span class="breadcrumb__current" aria-current="page">Story</span>
+    </nav>
+
+    <p class="section-label story-hero__label">{{ heroEyebrow }}</p>
+    <h1 class="story-hero__heading">
+      @for (line of heroHeadingLines; track $index; let last = $last) {
+        {{ line }}@if (!last) {<br>}
+      }
+    </h1>
+    <p class="story-hero__tagline">{{ heroTagline }}</p>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     ORIGIN — alternating text/image rows
+     ============================================================ -->
+@if (sections.length) {
+  <section class="story-origin" aria-label="Our roots and process">
+    <div class="story-origin__inner">
+
+      @for (section of sections; track section.id; let odd = $odd) {
+        <div
+          class="story-origin__row"
+          [class.story-origin__row--reverse]="odd"
+          [appRevealOnScroll]="true"
+        >
+          @if (section.imageUrl) {
+            <div class="story-origin__image-col">
+              <img [src]="section.imageUrl" [alt]="section.imageAlt || ''" class="story-origin__image">
+            </div>
+          }
+          <div class="story-origin__text-col">
+            @if (section.eyebrow) {
+              <p class="section-label">{{ section.eyebrow }}</p>
+            }
+            <h2 class="story-origin__heading">{{ section.heading }}</h2>
+            <p class="story-origin__body">{{ section.body }}</p>
+          </div>
+        </div>
+      }
+
+    </div>
+  </section>
+}
+
+
+<!-- ============================================================
+     STATS
+     ============================================================ -->
+@if (stats.length) {
+  <section class="story-stats" aria-label="Lead Farmer by the numbers">
+    <div class="story-stats__inner">
+      @for (stat of stats; track stat.id) {
+        <div class="story-stats__item">
+          <p class="story-stats__number" [class.story-stats__number--text]="stat.isTextStyle">{{ stat.value }}</p>
+          <p class="story-stats__label">{{ stat.label }}</p>
+        </div>
+      }
+    </div>
+  </section>
+}
+
+
+<!-- ============================================================
+     DISPENSARY DIRECTORY
+     ============================================================ -->
+<section class="story-directory" id="dispensaries" aria-labelledby="directory-heading">
+  <div class="story-directory__inner">
+
+    <div class="story-directory__header">
+      <p class="section-label">{{ directoryEyebrow }}</p>
+      <h2 id="directory-heading" class="section-heading">{{ directoryHeading }}</h2>
+      <p class="story-directory__intro">{{ directoryIntro }}</p>
+    </div>
+
+    <div class="story-directory__regions">
+      @for (group of dispensaryRegions; track group.region) {
+        <div class="story-directory__region" [appRevealOnScroll]="true">
+          <h3 class="story-directory__region-name">{{ group.region }}</h3>
+          <ul class="story-directory__list" role="list">
+            @for (d of group.dispensaries; track d.id) {
+              <li class="story-directory__item">
+                @if (d.websiteUrl) {
+                  <a class="story-directory__name story-directory__name--link" [href]="d.websiteUrl" target="_blank" rel="noopener noreferrer">{{ d.name }}</a>
+                } @else {
+                  <span class="story-directory__name">{{ d.name }}</span>
+                }
+                <span class="story-directory__dots" aria-hidden="true"></span>
+                <span class="story-directory__location">{{ d.location }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     CLOSING CTA
+     ============================================================ -->
+<section class="story-cta">
+  <div class="story-cta__inner">
+    <h2 class="story-cta__heading">{{ ctaHeading }}</h2>
+    <p class="story-cta__body">{{ ctaBody }}</p>
+    <div class="story-cta__actions">
+      <a [routerLink]="ctaPrimaryLink" class="btn btn--black">{{ ctaPrimaryLabel }}</a>
+      <a [href]="'mailto:' + contactEmail" class="btn btn--outline">{{ ctaSecondaryLabel }}</a>
+    </div>
+  </div>
+</section>

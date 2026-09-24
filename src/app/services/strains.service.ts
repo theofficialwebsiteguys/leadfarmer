@@ -1,36 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Strain, StrainImage } from '../models/strain.model';
-import { STRAINS } from '../data/strains.data';
+import { ContentStore } from './content-store.service';
 
 export type SortOption = 'featured' | 'newest' | 'az';
 
-export interface CatalogQuery {
-  types: string[];
-  formats: string[];
-  badges: string[];
-  search: string;
-  sort: SortOption;
-}
-
-export interface FacetOption {
-  value: string;
-  count: number;
-}
-
-export interface CatalogFacets {
-  classifications: FacetOption[];
-  formats: FacetOption[];
-  badges: FacetOption[];
-}
-
-// Static data today; swap the STRAINS import for an HTTP/CMS call later without
-// touching any component — every method here can become async at that point.
+// Reads from ContentStore, which is filled from the API before the app renders
+// (see app.config.ts). Keeping these methods synchronous is what lets the
+// catalog/detail components stay simple.
 @Injectable({ providedIn: 'root' })
 export class StrainsService {
-  private readonly strains: Strain[] = STRAINS;
+  private readonly store = inject(ContentStore);
 
-  getAll(): readonly Strain[] {
-    return this.strains;
+  private get strains(): readonly Strain[] {
+    return this.store.strains;
+  }
+
+  getAll(sort: SortOption = 'featured'): readonly Strain[] {
+    return [...this.strains].sort((a, b) => this.compare(a, b, sort));
   }
 
   getBySlug(slug: string): Strain | undefined {
@@ -41,83 +27,35 @@ export class StrainsService {
     return [strain.mainImage, ...(strain.galleryImages ?? []), ...(strain.packagingImages ?? [])];
   }
 
-  getFacets(): CatalogFacets {
-    return {
-      classifications: this.countBy(strain => [strain.classification]),
-      formats: this.countBy(strain => strain.formats.map(format => format.name)),
-      badges: this.countBy(strain => strain.badges ?? [])
-    };
-  }
+  /**
+   * A random handful of other products for the "keep exploring" strip at the
+   * bottom of a strain page.
+   *
+   * Deliberately not curated in the admin panel: picking four related strains by
+   * hand for every product is busywork that goes stale as soon as the menu
+   * changes. A fresh random set each page load also makes the rest of the
+   * catalog more discoverable.
+   */
+  getOtherProducts(current: Strain, max = 4): Strain[] {
+    const others = this.strains.filter(strain => strain.slug !== current.slug);
 
-  query(q: Partial<CatalogQuery>): readonly Strain[] {
-    const types = q.types?.length ? new Set(q.types) : null;
-    const formats = q.formats?.length ? new Set(q.formats) : null;
-    const badges = q.badges?.length ? new Set(q.badges) : null;
-    const search = q.search?.trim().toLowerCase() ?? '';
-
-    const results = this.strains.filter(strain => {
-      if (types && !types.has(strain.classification)) return false;
-      if (formats && !strain.formats.some(format => formats.has(format.name))) return false;
-      if (badges && !(strain.badges ?? []).some(badge => badges.has(badge))) return false;
-      if (search && !strain.name.toLowerCase().includes(search)) return false;
-      return true;
-    });
-
-    const sort = q.sort ?? 'featured';
-    return results.sort((a, b) => this.compare(a, b, sort));
-  }
-
-  getRelated(strain: Strain, max = 4): Strain[] {
-    const bySlug = new Map(this.strains.map(s => [s.slug, s]));
-    const seen = new Set<string>([strain.slug]);
-    const picked: Strain[] = [];
-
-    for (const slug of strain.relatedStrainSlugs ?? []) {
-      if (picked.length >= max) break;
-      const match = bySlug.get(slug);
-      if (match && !seen.has(match.slug)) {
-        picked.push(match);
-        seen.add(match.slug);
-      }
+    // Fisher–Yates on a copy — never mutate the store's array.
+    const shuffled = [...others];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // Fills any remaining slots by shared classification/format/badge, so the section
-    // stays populated even if relatedStrainSlugs is short or a linked strain is removed.
-    for (const candidate of this.strains) {
-      if (picked.length >= max) break;
-      if (seen.has(candidate.slug)) continue;
-
-      const sharesType = candidate.classification === strain.classification;
-      const sharesFormat = candidate.formats.some(format => strain.formats.some(sf => sf.name === format.name));
-      const sharesBadge = (candidate.badges ?? []).some(badge => (strain.badges ?? []).includes(badge));
-
-      if (sharesType || sharesFormat || sharesBadge) {
-        picked.push(candidate);
-        seen.add(candidate.slug);
-      }
-    }
-
-    return picked;
+    return shuffled.slice(0, max);
   }
 
   private compare(a: Strain, b: Strain, sort: SortOption): number {
     if (sort === 'az') return a.name.localeCompare(b.name);
     if (sort === 'newest') return (b.releaseDate ?? '').localeCompare(a.releaseDate ?? '');
 
+    // 'featured': featured strains first, otherwise the order set in the admin panel.
     const featuredRank = (strain: Strain) => (strain.featured ? 0 : 1);
     const rankDiff = featuredRank(a) - featuredRank(b);
     return rankDiff !== 0 ? rankDiff : this.strains.indexOf(a) - this.strains.indexOf(b);
-  }
-
-  private countBy(getValues: (strain: Strain) => string[]): FacetOption[] {
-    const counts = new Map<string, number>();
-    for (const strain of this.strains) {
-      for (const value of getValues(strain)) {
-        counts.set(value, (counts.get(value) ?? 0) + 1);
-      }
-    }
-    return [...counts.entries()]
-      .map(([value, count]) => ({ value, count }))
-      .sort((a, b) => a.value.localeCompare(b.value));
   }
 }

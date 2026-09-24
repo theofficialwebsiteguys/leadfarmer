@@ -1,3 +1,7 @@
+// Admin dashboard styles. Everything inside is scoped under `.admin` /
+// `.admin-overlay` / `.admin-toasts`, so it cannot affect the public site.
+@use './app/admin/admin-theme.scss';
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

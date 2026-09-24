@@ -6,34 +6,41 @@
 
   <a routerLink="/" class="nav__logo-link" aria-label="Lead Farmer — home">
     <img
-      src="assets/brand/brand-head.png"
-      alt="Lead Farmer"
+      [src]="logo.url"
+      [alt]="logo.alt || 'Lead Farmer'"
       class="nav__logo"
     >
   </a>
 
   <!-- Desktop links -->
   <ul class="nav__links" role="list">
-    <li><a routerLink="/" fragment="about" class="nav__link">Story</a></li>
+    <li>
+      <a
+        routerLink="/story"
+        routerLinkActive="nav__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="nav__link"
+      >{{ links.story }}</a>
+    </li>
     <li>
       <a
         routerLink="/strains"
         routerLinkActive="nav__link--active"
         [routerLinkActiveOptions]="{ exact: false }"
         class="nav__link"
-      >Strains</a>
+      >{{ links.strains }}</a>
     </li>
-    <li><a routerLink="/" fragment="photos" class="nav__link">Photos</a></li>
-    <li><a routerLink="/" fragment="articles" class="nav__link">Articles</a></li>
+    <li><a routerLink="/" fragment="photos" class="nav__link">{{ links.gallery }}</a></li>
+    <li><a routerLink="/" fragment="articles" class="nav__link">{{ links.articles }}</a></li>
     <li>
       <a
         routerLink="/merch"
         routerLinkActive="nav__link--active"
         [routerLinkActiveOptions]="{ exact: false }"
         class="nav__link"
-      >Merch</a>
+      >{{ links.merch }}</a>
     </li>
-    <li><a routerLink="/" fragment="contact" class="nav__link">Contact</a></li>
+    <li><a routerLink="/" fragment="contact" class="nav__link">{{ links.contact }}</a></li>
   </ul>
 
   <!-- Mobile hamburger -->
@@ -57,7 +64,14 @@
     [class.open]="menuOpen"
     role="menu"
   >
-    <a routerLink="/" fragment="about" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Story</a>
+    <a
+      routerLink="/story"
+      routerLinkActive="nav__mobile-link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      class="nav__mobile-link"
+      role="menuitem"
+      (click)="closeMenu()"
+    >{{ links.story }}</a>
     <a
       routerLink="/strains"
       routerLinkActive="nav__mobile-link--active"
@@ -65,9 +79,9 @@
       class="nav__mobile-link"
       role="menuitem"
       (click)="closeMenu()"
-    >Strains</a>
-    <a routerLink="/" fragment="photos" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Photos</a>
-    <a routerLink="/" fragment="articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Articles</a>
+    >{{ links.strains }}</a>
+    <a routerLink="/" fragment="photos" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">{{ links.gallery }}</a>
+    <a routerLink="/" fragment="articles" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">{{ links.articles }}</a>
     <a
       routerLink="/merch"
       routerLinkActive="nav__mobile-link--active"
@@ -75,8 +89,8 @@
       class="nav__mobile-link"
       role="menuitem"
       (click)="closeMenu()"
-    >Merch</a>
-    <a routerLink="/" fragment="contact" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">Contact</a>
+    >{{ links.merch }}</a>
+    <a routerLink="/" fragment="contact" class="nav__mobile-link" role="menuitem" (click)="closeMenu()">{{ links.contact }}</a>
   </div>
 
 </nav>

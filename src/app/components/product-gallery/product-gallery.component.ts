@@ -16,10 +16,6 @@ export class ProductGalleryComponent implements OnChanges, OnDestroy {
   @Input() images: StrainImage[] = [];
   @Input() productName = '';
 
-  // Set by a format selector so picking e.g. "Preroll" can jump the gallery to a
-  // matching packaging shot when one exists — purely a nice-to-have, never required.
-  @Input() focusLabel?: string;
-
   currentIndex = 0;
   lightboxOpen = false;
 
@@ -36,10 +32,6 @@ export class ProductGalleryComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['images']) {
       this.currentIndex = 0;
-    }
-    if (changes['focusLabel'] && this.focusLabel) {
-      const index = this.images.findIndex(img => img.label === this.focusLabel);
-      if (index !== -1) this.currentIndex = index;
     }
   }
 

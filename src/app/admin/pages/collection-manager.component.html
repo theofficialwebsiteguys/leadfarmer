@@ -1,0 +1,177 @@
+@if (config(); as config) {
+  <header class="admin__page-header">
+    <div>
+      <h1 class="admin__title">{{ config.title }}</h1>
+      <p class="admin__subtitle">{{ config.description }}</p>
+    </div>
+    @if (editingId() === null) {
+      <button type="button" class="admin__btn" (click)="startAdd()">Add a {{ config.singular }}</button>
+    }
+  </header>
+
+  @if (loading()) {
+    <p class="admin__loading"><span class="admin__spinner"></span> Loading…</p>
+  } @else if (loadError()) {
+    <div class="admin__notice admin__notice--error" role="alert">{{ loadError() }}</div>
+  } @else {
+
+    <!-- Add form -->
+    @if (editingId() === 'new') {
+      <section class="admin__card">
+        <h2 class="admin__card-title">New {{ config.singular }}</h2>
+        <ng-container *ngTemplateOutlet="formFields; context: { config: config }" />
+        <ng-container *ngTemplateOutlet="formActions; context: { config: config }" />
+      </section>
+    }
+
+    @if (rows().length === 0 && editingId() !== 'new') {
+      <div class="admin__empty">
+        <p style="margin-bottom: 1rem">Nothing here yet.</p>
+        <button type="button" class="admin__btn" (click)="startAdd()">Add the first {{ config.singular }}</button>
+      </div>
+    } @else {
+      <ul class="admin__list">
+        @for (row of rows(); track row['id']; let i = $index, first = $first, last = $last) {
+          <li class="admin__list-item" style="flex-wrap: wrap">
+
+            @if (editingId() === row['id']) {
+              <div style="width: 100%">
+                <h2 class="admin__card-title">Editing: {{ rowTitle(row) }}</h2>
+                <ng-container *ngTemplateOutlet="formFields; context: { config: config }" />
+                <ng-container *ngTemplateOutlet="formActions; context: { config: config }" />
+              </div>
+            } @else {
+              @if (config.imageField && row[config.imageField]) {
+                <img [src]="row[config.imageField]" alt="" class="admin__list-thumb">
+              }
+
+              <div class="admin__list-main">
+                <p class="admin__list-title">{{ rowTitle(row) }}</p>
+                <p class="admin__list-meta">
+                  @for (metaKey of config.metaFields; track metaKey) {
+                    @if (metaText(row, metaKey)) {
+                      <span>{{ metaText(row, metaKey) }}</span>
+                    }
+                  }
+                  @if (isHidden(row)) {
+                    <span class="admin__badge admin__badge--hidden">Hidden</span>
+                  }
+                </p>
+              </div>
+
+              <div class="admin__list-actions">
+                @if (config.reorderable) {
+                  <button type="button" class="admin__btn admin__btn--quiet admin__btn--small"
+                    [disabled]="first || editingId() !== null" (click)="move(i, -1)" aria-label="Move up" title="Move up">&uarr;</button>
+                  <button type="button" class="admin__btn admin__btn--quiet admin__btn--small"
+                    [disabled]="last || editingId() !== null" (click)="move(i, 1)" aria-label="Move down" title="Move down">&darr;</button>
+                }
+                <button type="button" class="admin__btn admin__btn--secondary admin__btn--small"
+                  [disabled]="editingId() !== null" (click)="startEdit(row)">Edit</button>
+                <button type="button" class="admin__btn admin__btn--danger admin__btn--small"
+                  [disabled]="editingId() !== null" (click)="remove(row)">Delete</button>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    }
+  }
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Shared form templates                                               -->
+  <!-- ------------------------------------------------------------------ -->
+
+  <ng-template #formFields let-config="config">
+    @for (field of config.fields; track field.key) {
+
+      @switch (field.type) {
+        @case ('image') {
+          <app-image-field
+            [label]="field.label"
+            [helpText]="field.help || ''"
+            [fieldId]="'collection-' + field.key"
+            [path]="draft[field.key] || ''"
+            [alt]="field.altKey ? (draft[field.altKey] || '') : ''"
+            (pathChange)="draft[field.key] = $event"
+            (altChange)="field.altKey ? (draft[field.altKey] = $event) : null"
+          />
+        }
+
+        @case ('checkbox') {
+          <div class="admin__field">
+            <label class="admin__checkbox">
+              <input type="checkbox" [name]="field.key" [(ngModel)]="draft[field.key]">
+              <span>{{ field.label }}</span>
+            </label>
+            @if (field.help) { <p class="admin__help">{{ field.help }}</p> }
+          </div>
+        }
+
+        @case ('select') {
+          <div class="admin__field">
+            <label class="admin__label" [attr.for]="'field-' + field.key">{{ field.label }}</label>
+            @if (field.help) { <p class="admin__help">{{ field.help }}</p> }
+            <select [id]="'field-' + field.key" [name]="field.key" class="admin__select" [(ngModel)]="draft[field.key]">
+              @for (option of field.options || []; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (errorFor(field.key)) { <p class="admin__error">{{ errorFor(field.key) }}</p> }
+          </div>
+        }
+
+        @case ('textarea') {
+          <div class="admin__field">
+            <label class="admin__label" [attr.for]="'field-' + field.key">
+              {{ field.label }}@if (field.required) { <span aria-hidden="true"> *</span> }
+            </label>
+            @if (field.help) { <p class="admin__help">{{ field.help }}</p> }
+            <textarea
+              [id]="'field-' + field.key"
+              [name]="field.key"
+              class="admin__textarea"
+              [(ngModel)]="draft[field.key]"
+              [attr.aria-invalid]="errorFor(field.key) ? 'true' : null"
+            ></textarea>
+            @if (errorFor(field.key)) { <p class="admin__error">{{ errorFor(field.key) }}</p> }
+          </div>
+        }
+
+        @default {
+          <div class="admin__field">
+            <label class="admin__label" [attr.for]="'field-' + field.key">
+              {{ field.label }}@if (field.required) { <span aria-hidden="true"> *</span> }
+            </label>
+            @if (field.help) { <p class="admin__help">{{ field.help }}</p> }
+            <input
+              [id]="'field-' + field.key"
+              [name]="field.key"
+              class="admin__input"
+              [type]="field.type === 'date' ? 'date' : 'text'"
+              [placeholder]="field.placeholder || ''"
+              [(ngModel)]="draft[field.key]"
+              [attr.aria-invalid]="errorFor(field.key) ? 'true' : null"
+            >
+            @if (errorFor(field.key)) { <p class="admin__error">{{ errorFor(field.key) }}</p> }
+          </div>
+        }
+      }
+    }
+  </ng-template>
+
+  <ng-template #formActions let-config="config">
+    <div class="admin__actions" style="margin-top: 1rem">
+      <button type="button" class="admin__btn" (click)="save()" [disabled]="savingId() !== null">
+        @if (savingId() !== null) {
+          <span class="admin__spinner"></span> Saving…
+        } @else {
+          {{ editingId() === 'new' ? 'Add ' + config.singular : 'Save changes' }}
+        }
+      </button>
+      <button type="button" class="admin__btn admin__btn--secondary" (click)="cancelEdit()" [disabled]="savingId() !== null">
+        Cancel
+      </button>
+    </div>
+  </ng-template>
+}

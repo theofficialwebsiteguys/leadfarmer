@@ -1,6 +1,11 @@
-<a class="skip-link" href="#main-content">Skip to main content</a>
-<app-nav></app-nav>
-<main id="main-content">
+@if (isAdminRoute()) {
   <router-outlet />
-</main>
-<app-footer></app-footer>
+} @else {
+  <app-age-gate></app-age-gate>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <app-nav></app-nav>
+  <main id="main-content">
+    <router-outlet />
+  </main>
+  <app-footer></app-footer>
+}

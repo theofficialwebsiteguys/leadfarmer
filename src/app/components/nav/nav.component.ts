@@ -1,7 +1,8 @@
-import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ContentStore } from '../../services/content-store.service';
 
 @Component({
   selector: 'app-nav',
@@ -18,8 +19,20 @@ export class NavComponent implements OnInit, OnDestroy {
   // has a white background from the top, so the nav stays permanently in its solid state.
   private onDarkHeroRoute = true;
 
+  private readonly content = inject(ContentStore);
+
   scrolled = false;
   menuOpen = false;
+
+  readonly logo = this.content.image('nav.logoImage', 'assets/brand/brand-head.png', 'Lead Farmer');
+  readonly links = {
+    story: this.content.text('nav.storyLabel', 'Story'),
+    strains: this.content.text('nav.strainsLabel', 'Strains'),
+    gallery: this.content.text('nav.galleryLabel', 'Gallery'),
+    articles: this.content.text('nav.articlesLabel', 'Articles'),
+    merch: this.content.text('nav.merchLabel', 'Merch'),
+    contact: this.content.text('nav.contactLabel', 'Contact')
+  };
 
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,

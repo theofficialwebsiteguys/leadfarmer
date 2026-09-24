@@ -151,6 +151,36 @@
     color: var(--color-muted);
   }
 
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.75rem;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-black);
+    border-bottom: 1.5px solid var(--color-black);
+    padding-bottom: 0.2rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-black);
+      outline-offset: 3px;
+    }
+  }
+
+  &__link-arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+  }
+
+  &__link:hover &__link-arrow,
+  &__link:focus-visible &__link-arrow {
+    transform: translateX(4px);
+  }
+
   @media (max-width: 860px) {
     &__inner {
       grid-template-columns: 1fr;

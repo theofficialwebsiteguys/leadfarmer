@@ -1,0 +1,36 @@
+@if (open) {
+  <div
+    class="age-gate"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="age-gate-heading"
+    tabindex="-1"
+    #gateEl
+  >
+    <div class="age-gate__card">
+      <img
+        [src]="logo.url"
+        [alt]="logo.alt || 'Lead Farmer'"
+        class="age-gate__logo"
+      >
+
+      @if (!denied) {
+        <p class="section-label">{{ eyebrow }}</p>
+        <h1 id="age-gate-heading" class="age-gate__heading">{{ heading }}</h1>
+        <p class="age-gate__desc">{{ body }}</p>
+
+        <div class="age-gate__actions">
+          <button type="button" class="btn btn--black" (click)="confirm()">{{ confirmLabel }}</button>
+          <button type="button" class="btn btn--outline" (click)="deny()">{{ denyLabel }}</button>
+        </div>
+      } @else {
+        <h1 id="age-gate-heading" class="age-gate__heading">{{ deniedHeading }}</h1>
+        <p class="age-gate__desc">{{ deniedBody }}</p>
+
+        <div class="age-gate__actions">
+          <a [href]="deniedButtonLink" class="btn btn--outline">{{ deniedButtonLabel }}</a>
+        </div>
+      }
+    </div>
+  </div>
+}

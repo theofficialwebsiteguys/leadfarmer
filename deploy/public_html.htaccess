@@ -1,0 +1,86 @@
+# ============================================================================
+# Lead Farmer — public_html/.htaccess
+#
+# Deploy this file to public_html/.htaccess (rename it — it is stored here as
+# public_html.htaccess so it does not affect this repository).
+#
+# Responsibilities:
+#   1. Serve the Angular single-page app, including deep links on refresh.
+#   2. Leave /api and /uploads alone so they are reachable directly.
+#   3. Force HTTPS and set baseline security headers.
+#   4. Cache hashed build assets hard, never cache index.html.
+# ============================================================================
+
+Options -Indexes
+
+# ---------------------------------------------------------------------------
+# 1. HTTPS
+#    Enable after the AutoSSL certificate is issued, or visitors on http:// get
+#    a redirect loop to a certificate that does not exist yet.
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # -----------------------------------------------------------------------
+    # 2. Angular routing
+    #
+    #    /api/... and /uploads/... must never be rewritten to index.html —
+    #    they are the PHP API and the client's uploaded images.
+    # -----------------------------------------------------------------------
+    RewriteRule ^api(/.*)?$ - [L]
+    RewriteRule ^uploads(/.*)?$ - [L]
+
+    # Anything that exists on disk (JS, CSS, images, favicon) is served as-is.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else is an Angular route (/strains/mac1, /story, /admin, ...)
+    # and must return index.html so the app can boot and route client-side.
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 3. Security headers
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    # Enable once HTTPS is confirmed working on the apex and www hosts.
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 4. Caching
+#
+#    Production builds hash their filenames (main-AB12CD34.js), so those are
+#    safe to cache forever. index.html points at them and must always be
+#    revalidated, or a deploy would not reach returning visitors.
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|woff2?|ttf|otf|eot|svg|jpg|jpeg|png|webp|gif|ico|mp4)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    <FilesMatch "^index\.html$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 5. Keep dotfiles private
+# ---------------------------------------------------------------------------
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

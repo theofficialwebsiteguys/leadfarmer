@@ -1,8 +1,14 @@
 <footer class="footer" role="contentinfo">
   <div class="footer__inner">
     <hr class="footer__rule" aria-hidden="true">
+
+    <p class="footer__warning" role="note">
+      {{ warningText }}
+      <a [href]="warningLinkUrl" target="_blank" rel="noopener noreferrer" class="footer__warning-link">{{ warningLinkLabel }}</a>.
+    </p>
+
     <p class="footer__copy">
-      &copy; {{ currentYear }} Lead Farmer. Premium Cannabis Cultivation.
+      &copy; {{ currentYear }} {{ copyrightSuffix }}
     </p>
   </div>
 </footer>

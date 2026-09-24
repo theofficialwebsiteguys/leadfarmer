@@ -13,13 +13,6 @@
       loading="lazy"
     >
 
-    @if (strain.badges?.length) {
-      <div class="strain-card__badges">
-        @for (badge of strain.badges; track badge) {
-          <span class="strain-card__badge">{{ badge }}</span>
-        }
-      </div>
-    }
   </div>
 
   @if (variant === 'minimal') {
@@ -31,13 +24,9 @@
       } @else {
         <h3 class="strain-card__name strain-card__name--minimal">{{ strain.name }}</h3>
       }
-
-      <p class="strain-card__type strain-card__type--minimal">{{ strain.classification }}</p>
     </div>
   } @else {
     <div class="strain-card__body">
-      <p class="strain-card__type">{{ strain.classification }}</p>
-
       @if (headingLevel === 2) {
         <h2 class="strain-card__name">{{ strain.name }}</h2>
       } @else {
@@ -46,11 +35,11 @@
 
       <p class="strain-card__desc">{{ strain.shortDescription }}</p>
 
-      <ul class="strain-card__forms" role="list">
+      <!-- <ul class="strain-card__forms" role="list">
         @for (format of strain.formats; track format.name) {
           <li class="strain-card__form">{{ format.name }}</li>
         }
-      </ul>
+      </ul> -->
 
       <span class="strain-card__cta">
         Explore Strain

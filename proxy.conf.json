@@ -1,0 +1,23 @@
+{
+  "//": [
+    "Local development proxy: forwards /api and /uploads from `ng serve` (port 4200)",
+    "to the PHP backend running on port 8000, so the browser sees one origin and the",
+    "session cookie works exactly as it does in production.",
+    "",
+    "Start the PHP side first, from the repository root:",
+    "  php -S localhost:8000 -t .",
+    "then:",
+    "  npm start"
+  ],
+  "/api": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": false,
+    "logLevel": "debug"
+  },
+  "/uploads": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": false
+  }
+}

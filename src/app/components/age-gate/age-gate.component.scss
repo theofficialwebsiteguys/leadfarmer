@@ -1,0 +1,65 @@
+.age-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000; // above the nav (100) and its mobile menu (90)
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--container-pad);
+
+  // Scrim over whatever's rendering behind it (e.g. the homepage hero video) — blurred
+  // and dimmed rather than fully hidden, so it's clear something's still playing back there.
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &__card {
+    width: 100%;
+    max-width: 26rem;
+    text-align: center;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+    padding: clamp(2.25rem, 6vw, 3rem) clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  &__logo {
+    height: 72px;
+    width: auto;
+    margin: 0 auto 1.5rem;
+  }
+
+  &__heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-black);
+    margin-bottom: 1rem;
+  }
+
+  &__desc {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--color-muted);
+    margin-bottom: 2rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+
+    .btn {
+      flex: 1 1 auto;
+    }
+  }
+}

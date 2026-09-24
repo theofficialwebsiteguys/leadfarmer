@@ -21,21 +21,20 @@
     <h1 class="visually-hidden">Lead Farmer — Southern Tier Cannabis Cultivation</h1>
 
     <img
-      src="assets/brand/brand-lettering-white.png"
-      alt="Lead Farmer"
+      [src]="heroWordmark.url"
+      [alt]="heroWordmark.alt || 'Lead Farmer'"
       class="hero__wordmark"
     >
 
     <p class="hero__tagline">
-      Grown with precision, care, and deep respect for the craft.<br>
-      Every plant tells a story of quality and dedication.
+      @for (line of heroTaglineLines; track $index; let last = $last) {
+        {{ line }}@if (!last) {<br>}
+      }
     </p>
 
-    <p class="hero__scroll" aria-hidden="true">Scroll</p>
-
     <div class="hero__ctas">
-      <a routerLink="/strains" class="btn btn--white">View Strains</a>
-      <a href="#articles" class="btn btn--dark">Read Articles</a>
+      <a [routerLink]="heroPrimaryLink" class="btn btn--white">{{ heroPrimaryLabel }}</a>
+      <a [href]="heroSecondaryLink" class="btn btn--dark">{{ heroSecondaryLabel }}</a>
     </div>
 
   </div>
@@ -51,24 +50,26 @@
 
     <div class="story__image-col" aria-hidden="true">
       <img
-        src="assets/brand/brand-full.png"
-        alt=""
+        [src]="storyImage.url"
+        [alt]="storyImage.alt"
         class="story__image"
       >
     </div>
 
     <div class="story__text-col">
-      <p class="story__label">The Craft</p>
+      <p class="story__label">{{ storyEyebrow }}</p>
       <h2 id="story-heading" class="story__heading">
-        Every Plant.<br>Every Room.<br>Every Harvest.
+        @for (line of storyHeadingLines; track $index; let last = $last) {
+          {{ line }}@if (!last) {<br>}
+        }
       </h2>
-      <p class="story__body">
-        We cultivate cannabis the way it should be grown — deliberately, and with care.
-        From the moment a clone is set to the final cure, every decision is made with the
-        plant and the customer in mind. Our grow rooms in the Southern Tier are built for
-        precision, consistency, and quality without compromise.
-      </p>
-      <p class="story__location">Southern Tier, New York</p>
+      <p class="story__body">{{ storyBody }}</p>
+      <p class="story__location">{{ storyLocation }}</p>
+
+      <a routerLink="/story" class="story__link">
+        {{ storyLinkLabel }}
+        <span class="story__link-arrow" aria-hidden="true">&#8594;</span>
+      </a>
     </div>
 
   </div>
@@ -82,8 +83,8 @@
   <div class="strains__inner">
 
     <div class="strains__header">
-      <p class="section-label">Our Strains</p>
-      <h2 id="strains-heading" class="section-heading">What We Grow</h2>
+      <p class="section-label">{{ strainsEyebrow }}</p>
+      <h2 id="strains-heading" class="section-heading">{{ strainsHeading }}</h2>
     </div>
 
     <app-strain-grid
@@ -93,7 +94,7 @@
     />
 
     <div class="strains__cta">
-      <a routerLink="/strains" class="btn btn--black">Browse All Strains</a>
+      <a routerLink="/strains" class="btn btn--black">{{ strainsButtonLabel }}</a>
     </div>
 
   </div>
@@ -107,24 +108,24 @@
   <div class="photos__inner">
 
     <div class="photos__header">
-      <p class="section-label">The Harvest</p>
-      <h2 id="photos-heading" class="section-heading">Photos</h2>
+      <p class="section-label">{{ galleryEyebrow }}</p>
+      <h2 id="photos-heading" class="section-heading">{{ galleryHeading }}</h2>
     </div>
 
     <div class="photos__carousel">
       <button type="button" class="photos__arrow photos__arrow--prev" (click)="scrollPhotos(-1)" aria-label="Scroll photos left">&#8249;</button>
 
       <div class="photos__track" #photosTrack>
-        @for (photo of photos; track photo.src; let i = $index) {
+        @for (photo of photos; track $index; let i = $index) {
           <button
             type="button"
             class="photos__item"
-            [class.photos__item--group-start]="photo.isGroupStart"
+            [class.photos__item--group-start]="!!photo.caption"
             (click)="openPhoto(i)"
             [attr.aria-label]="'View larger — ' + photo.alt"
           >
-            @if (photo.isGroupStart) {
-              <span class="photos__label">{{ photo.strain }}</span>
+            @if (photo.caption) {
+              <span class="photos__label">{{ photo.caption }}</span>
             }
             <img [src]="photo.src" [alt]="photo.alt" class="photos__img" loading="lazy">
           </button>
@@ -173,8 +174,8 @@
   <div class="articles__inner">
 
     <div class="articles__header">
-      <p class="section-label">Field Notes</p>
-      <h2 id="articles-heading" class="section-heading">Latest Articles</h2>
+      <p class="section-label">{{ articlesEyebrow }}</p>
+      <h2 id="articles-heading" class="section-heading">{{ articlesHeading }}</h2>
     </div>
 
     <div class="articles__grid">
@@ -182,10 +183,10 @@
         <article class="article-card">
 
           <div class="article-card__img-wrap" aria-hidden="true">
-            @if (article.image) {
+            @if (article.imageUrl) {
               <img
-                [src]="article.image"
-                [alt]="article.title"
+                [src]="article.imageUrl"
+                [alt]="article.imageAlt || article.title"
                 class="article-card__img"
               >
             } @else {
@@ -196,14 +197,15 @@
           </div>
 
           <div class="article-card__body">
-            <time class="article-card__date" [dateTime]="article.date">
-              {{ article.date | date:'MMMM d, yyyy' | uppercase }}
-            </time>
+            @if (article.publishedOn) {
+              <time class="article-card__date" [dateTime]="article.publishedOn">
+                {{ article.publishedOn | date:'MMMM d, yyyy' | uppercase }}
+              </time>
+            }
             <h3 class="article-card__title">{{ article.title }}</h3>
             <p class="article-card__excerpt">{{ article.excerpt }}</p>
-            <!-- TODO: Update href to real article route -->
             <a
-              [href]="'/articles/' + article.slug"
+              [href]="article.externalUrl || ('/articles/' + article.slug)"
               class="article-card__link"
               [attr.aria-label]="'Read: ' + article.title"
             >Read More</a>
@@ -224,13 +226,13 @@
   <div class="contact__inner">
 
     <img
-      src="assets/brand/brand-head.png"
+      [src]="contactMark.url"
       alt=""
       class="contact__mark"
       aria-hidden="true"
     >
 
-    <h2 id="contact-heading" class="contact__heading">Get In Touch</h2>
+    <h2 id="contact-heading" class="contact__heading">{{ contactHeading }}</h2>
 
     <a [href]="'mailto:' + contact.email" class="contact__email">
       {{ contact.email }}

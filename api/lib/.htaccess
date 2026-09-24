@@ -1,0 +1,4 @@
+# Nothing in this directory is a web entry point — it is included by
+# api/index.php. Denying direct access means that even if PHP handling were
+# ever misconfigured, the source could not be served as plain text.
+Require all denied

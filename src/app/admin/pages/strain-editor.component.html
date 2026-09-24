@@ -1,0 +1,208 @@
+<header class="admin__page-header">
+  <div>
+    <h1 class="admin__title">{{ isNew() ? 'Add a strain' : form.name || 'Edit strain' }}</h1>
+    <p class="admin__subtitle">
+      A strain is a name, a short description and photos — that is everything the website shows.
+    </p>
+  </div>
+  <a routerLink="/admin/strains" class="admin__btn admin__btn--secondary">Back to list</a>
+</header>
+
+@if (loading()) {
+  <p class="admin__loading"><span class="admin__spinner"></span> Loading…</p>
+} @else if (loadError()) {
+  <div class="admin__notice admin__notice--error" role="alert">{{ loadError() }}</div>
+} @else {
+
+  <!-- ---------------------------------------------------------------- -->
+  <section class="admin__card">
+    <h2 class="admin__card-title">Details</h2>
+
+    <div class="admin__field">
+      <label class="admin__label" for="strain-name">Strain name</label>
+      <input
+        id="strain-name"
+        name="name"
+        class="admin__input"
+        [(ngModel)]="form.name"
+        (ngModelChange)="onNameChange()"
+        [attr.aria-invalid]="errorFor('name') ? 'true' : null"
+      >
+      @if (errorFor('name')) { <p class="admin__error">{{ errorFor('name') }}</p> }
+    </div>
+
+    <div class="admin__field">
+      <label class="admin__label" for="strain-short">Description</label>
+      <p class="admin__help">
+        One or two sentences. This is what appears on the strain card in the menu and under the
+        name on the strain's own page.
+      </p>
+      <textarea
+        id="strain-short"
+        name="shortDescription"
+        class="admin__textarea"
+        [(ngModel)]="form.shortDescription"
+        [attr.aria-invalid]="errorFor('shortDescription') ? 'true' : null"
+      ></textarea>
+      @if (errorFor('shortDescription')) { <p class="admin__error">{{ errorFor('shortDescription') }}</p> }
+    </div>
+
+    <div class="admin__field">
+      <label class="admin__label" for="strain-slug">Web address</label>
+      <p class="admin__help">
+        The end of this strain's link, e.g. <code>blue-zushi</code> becomes
+        yoursite.com/strains/blue-zushi. Filled in automatically from the name. Changing it on an
+        existing strain breaks any links people have already shared.
+      </p>
+      <input
+        id="strain-slug"
+        name="slug"
+        class="admin__input"
+        [(ngModel)]="form.slug"
+        [attr.aria-invalid]="errorFor('slug') ? 'true' : null"
+      >
+      @if (errorFor('slug')) { <p class="admin__error">{{ errorFor('slug') }}</p> }
+    </div>
+
+    <div class="admin__field">
+      <label class="admin__label" for="strain-release">Release date</label>
+      <p class="admin__help">Optional. Only used for ordering; it is not shown on the site.</p>
+      <input id="strain-release" name="releaseDate" class="admin__input" type="date" [(ngModel)]="form.releaseDate">
+      @if (errorFor('releaseDate')) { <p class="admin__error">{{ errorFor('releaseDate') }}</p> }
+    </div>
+
+    <div class="admin__row">
+      <label class="admin__checkbox">
+        <input type="checkbox" name="featured" [(ngModel)]="form.featured">
+        <span>Feature this strain (shows first in the menu)</span>
+      </label>
+
+      <label class="admin__checkbox">
+        <input type="checkbox" name="isPublished" [(ngModel)]="form.isPublished">
+        <span>Show on the website</span>
+      </label>
+    </div>
+
+    @if (!form.isPublished) {
+      <div class="admin__notice admin__notice--warn">
+        This strain is hidden. It stays saved here but visitors cannot see it.
+      </div>
+    }
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section class="admin__card">
+    <h2 class="admin__card-title">Photos</h2>
+
+    <app-image-field
+      label="Main photo"
+      helpText="Shown on the strain card and first in the gallery on the strain page. Required."
+      fieldId="main-image"
+      [path]="form.mainImage.path"
+      [previewUrl]="form.mainImage.url"
+      [alt]="form.mainImage.alt"
+      (pathChange)="form.mainImage.path = $event"
+      (previewUrlChange)="form.mainImage.url = $event"
+      (altChange)="form.mainImage.alt = $event"
+    />
+    @if (errorFor('mainImage') || errorFor('mainImage.src')) {
+      <p class="admin__error">{{ errorFor('mainImage') || errorFor('mainImage.src') }}</p>
+    }
+
+    <div class="admin__field">
+      <label class="admin__label" for="main-label">Caption</label>
+      <p class="admin__help">A short label like “Flower”, shown under the photo in the gallery.</p>
+      <input id="main-label" name="mainLabel" class="admin__input" [(ngModel)]="form.mainImage.label">
+    </div>
+
+    <!-- Gallery -->
+    <h3 class="admin__label" style="margin-top: 1.5rem">More photos of the flower</h3>
+    <p class="admin__help">These appear in the gallery on the strain page, after the main photo.</p>
+
+    @for (image of form.galleryImages; track $index; let i = $index, first = $first, last = $last) {
+      <div class="admin__repeat-row">
+        <div class="admin__repeat-fields">
+          <app-image-field
+            label="Photo {{ i + 1 }}"
+            [fieldId]="'gallery-' + i"
+            [path]="image.path"
+            [previewUrl]="image.url"
+            [alt]="image.alt"
+            (pathChange)="image.path = $event"
+            (previewUrlChange)="image.url = $event"
+            (altChange)="image.alt = $event"
+          />
+          <div class="admin__field" style="margin-bottom: 0">
+            <label class="admin__label" [attr.for]="'gallery-label-' + i">Caption</label>
+            <input [id]="'gallery-label-' + i" [name]="'galleryLabel' + i" class="admin__input" [(ngModel)]="image.label">
+          </div>
+        </div>
+        <div class="admin__list-actions" style="flex-direction: column">
+          <button type="button" class="admin__btn admin__btn--quiet admin__btn--small" [disabled]="first" (click)="moveImage('galleryImages', i, -1)" aria-label="Move up">&uarr;</button>
+          <button type="button" class="admin__btn admin__btn--quiet admin__btn--small" [disabled]="last" (click)="moveImage('galleryImages', i, 1)" aria-label="Move down">&darr;</button>
+          <button type="button" class="admin__btn admin__btn--danger admin__btn--small" (click)="removeImage('galleryImages', i)">Remove</button>
+        </div>
+      </div>
+    }
+    <button type="button" class="admin__btn admin__btn--secondary admin__btn--small" (click)="addImage('galleryImages')">Add a photo</button>
+
+    <!-- Packaging -->
+    <h3 class="admin__label" style="margin-top: 1.75rem">Packaging photos</h3>
+    <p class="admin__help">Shots of the bags, jars and prerolls as they are sold. These follow the flower photos in the gallery.</p>
+
+    @for (image of form.packagingImages; track $index; let i = $index, first = $first, last = $last) {
+      <div class="admin__repeat-row">
+        <div class="admin__repeat-fields">
+          <app-image-field
+            label="Packaging photo {{ i + 1 }}"
+            [fieldId]="'packaging-' + i"
+            [path]="image.path"
+            [previewUrl]="image.url"
+            [alt]="image.alt"
+            (pathChange)="image.path = $event"
+            (previewUrlChange)="image.url = $event"
+            (altChange)="image.alt = $event"
+          />
+          <div class="admin__field" style="margin-bottom: 0">
+            <label class="admin__label" [attr.for]="'packaging-label-' + i">Caption</label>
+            <input [id]="'packaging-label-' + i" [name]="'packagingLabel' + i" class="admin__input" [(ngModel)]="image.label">
+          </div>
+        </div>
+        <div class="admin__list-actions" style="flex-direction: column">
+          <button type="button" class="admin__btn admin__btn--quiet admin__btn--small" [disabled]="first" (click)="moveImage('packagingImages', i, -1)" aria-label="Move up">&uarr;</button>
+          <button type="button" class="admin__btn admin__btn--quiet admin__btn--small" [disabled]="last" (click)="moveImage('packagingImages', i, 1)" aria-label="Move down">&darr;</button>
+          <button type="button" class="admin__btn admin__btn--danger admin__btn--small" (click)="removeImage('packagingImages', i)">Remove</button>
+        </div>
+      </div>
+    }
+    <button type="button" class="admin__btn admin__btn--secondary admin__btn--small" (click)="addImage('packagingImages')">Add a packaging photo</button>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <div class="admin__save-bar">
+    <span class="admin__dirty-note" [class.admin__dirty-note--dirty]="hasUnsavedChanges()">
+      @if (saving()) {
+        Saving…
+      } @else if (hasUnsavedChanges()) {
+        You have unsaved changes
+      } @else {
+        All changes saved
+      }
+    </span>
+
+    <div class="admin__actions">
+      @if (!isNew()) {
+        <button type="button" class="admin__btn admin__btn--danger" (click)="remove()" [disabled]="saving()">
+          Delete strain
+        </button>
+      }
+      <button type="button" class="admin__btn" (click)="save()" [disabled]="saving()">
+        @if (saving()) {
+          <span class="admin__spinner"></span> Saving…
+        } @else {
+          {{ isNew() ? 'Add strain' : 'Save changes' }}
+        }
+      </button>
+    </div>
+  </div>
+}
