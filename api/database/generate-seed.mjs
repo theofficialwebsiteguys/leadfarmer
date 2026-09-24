@@ -76,8 +76,8 @@ const contentBlocks = [
   ['homepage.heroScrollLabel', 'Scroll', 'text', 'homepage', 'Hero', 'Scroll prompt', 'The small word above the buttons.', ''],
   ['homepage.heroPrimaryButtonLabel', 'View Strains', 'text', 'homepage', 'Hero', 'Main button text', '', ''],
   ['homepage.heroPrimaryButtonLink', '/strains', 'url', 'homepage', 'Hero', 'Main button link', 'A page on this site (like /strains) or a full web address.', ''],
-  ['homepage.heroSecondaryButtonLabel', 'Read Articles', 'text', 'homepage', 'Hero', 'Second button text', '', ''],
-  ['homepage.heroSecondaryButtonLink', '#articles', 'url', 'homepage', 'Hero', 'Second button link', '', ''],
+  ['homepage.heroSecondaryButtonLabel', 'Shop Merch', 'text', 'homepage', 'Hero', 'Second button text', '', ''],
+  ['homepage.heroSecondaryButtonLink', '/merch', 'url', 'homepage', 'Hero', 'Second button link', '', ''],
 
   // ---- Home: story teaser ------------------------------------------------
   ['homepage.storyEyebrow', 'The Craft', 'text', 'homepage', 'Story section', 'Small label above the heading', '', ''],

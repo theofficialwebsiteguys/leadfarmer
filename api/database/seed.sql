@@ -26,8 +26,8 @@ Every plant tells a story of quality and dedication.', NULL, 'textarea', 'homepa
   ('homepage.heroScrollLabel', 'Scroll', NULL, 'text', 'homepage', 'Hero', 'Scroll prompt', 'The small word above the buttons.', 2),
   ('homepage.heroPrimaryButtonLabel', 'View Strains', NULL, 'text', 'homepage', 'Hero', 'Main button text', NULL, 3),
   ('homepage.heroPrimaryButtonLink', '/strains', NULL, 'url', 'homepage', 'Hero', 'Main button link', 'A page on this site (like /strains) or a full web address.', 4),
-  ('homepage.heroSecondaryButtonLabel', 'Read Articles', NULL, 'text', 'homepage', 'Hero', 'Second button text', NULL, 5),
-  ('homepage.heroSecondaryButtonLink', '#articles', NULL, 'url', 'homepage', 'Hero', 'Second button link', NULL, 6),
+  ('homepage.heroSecondaryButtonLabel', 'Shop Merch', NULL, 'text', 'homepage', 'Hero', 'Second button text', NULL, 5),
+  ('homepage.heroSecondaryButtonLink', '/merch', NULL, 'url', 'homepage', 'Hero', 'Second button link', NULL, 6),
   ('homepage.storyEyebrow', 'The Craft', NULL, 'text', 'homepage', 'Story section', 'Small label above the heading', NULL, 7),
   ('homepage.storyHeading', 'Every Plant.
 Every Room.

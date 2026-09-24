@@ -42,8 +42,8 @@ export class HomeComponent implements AfterViewInit {
   readonly heroScrollLabel = this.content.text('homepage.heroScrollLabel', 'Scroll');
   readonly heroPrimaryLabel = this.content.text('homepage.heroPrimaryButtonLabel', 'View Strains');
   readonly heroPrimaryLink = this.content.text('homepage.heroPrimaryButtonLink', '/strains');
-  readonly heroSecondaryLabel = this.content.text('homepage.heroSecondaryButtonLabel', 'Read Articles');
-  readonly heroSecondaryLink = this.content.text('homepage.heroSecondaryButtonLink', '#articles');
+  readonly heroSecondaryLabel = this.content.text('homepage.heroSecondaryButtonLabel', 'Shop Merch');
+  readonly heroSecondaryLink = this.content.text('homepage.heroSecondaryButtonLink', '/merch');
 
   readonly storyEyebrow = this.content.text('homepage.storyEyebrow', 'The Craft');
   readonly storyHeadingLines = this.content.lines('homepage.storyHeading', 'Every Plant.\nEvery Room.\nEvery Harvest.');
