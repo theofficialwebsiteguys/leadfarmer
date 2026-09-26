@@ -373,14 +373,29 @@ GitHub Pages serves static files only — no PHP, no MySQL. So:
 
 ### Deploying the preview
 
-**Pages for this repo serves `main` → `/docs`. It does not use the `gh-pages`
-branch.** Deploying with `angular-cli-ghpages` pushes to that branch, reports
-success, and changes nothing — the live site keeps serving whatever is in
-`docs/`. Check *Settings → Pages* if you are unsure which source is configured.
+**Pages for this repo serves the `gh-pages` branch — not `main` → `/docs`.**
+This matters more than it sounds: pushing `main` triggers no Pages build at
+all, so a push can look completely successful while the live site carries on
+serving the previous build. Verify with *Settings → Pages* if in doubt.
+
+Two steps, and the second is the one that actually deploys:
 
 ```bash
-npm run build:ghpages     # builds straight into docs/
-git add docs && git commit -m "Update preview build" && git push
+npm run build:ghpages     # builds into docs/ (committed on main for review)
+npm run deploy:ghpages    # copies docs/ onto gh-pages — this is the deploy
+```
+
+`deploy:ghpages` works through a temporary git worktree, so it never touches
+your working tree or switches your branch. It refuses to publish if the base
+href is wrong, and does nothing if `gh-pages` already matches `docs/`.
+
+To confirm a deploy really landed, compare the bundle the live site references
+against your build — if they differ, Pages has not finished (give it a minute)
+or never built:
+
+```bash
+curl -s https://theofficialwebsiteguys.github.io/leadfarmer/ | grep -o 'main-[A-Z0-9]*.js'
+grep -o 'main-[A-Z0-9]*.js' docs/index.html | head -1
 ```
 
 `docs/` is **build output only** — it is wiped and rewritten on every build.

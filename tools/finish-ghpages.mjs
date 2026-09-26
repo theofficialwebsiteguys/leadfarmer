@@ -1,9 +1,13 @@
 /**
  * Post-processes the docs/ build for GitHub Pages.
  *
- * This repository's Pages site is served from the `main` branch's /docs folder
- * — NOT from a gh-pages branch. Deploying with angular-cli-ghpages pushes to a
- * branch Pages ignores, which looks like it worked and changes nothing.
+ * This repository's Pages site is served from the `gh-pages` BRANCH, whose root
+ * holds the built site. Building into /docs on main is not enough on its own:
+ * pushing main triggers no Pages build at all, which looks like a successful
+ * deploy while the live site stays unchanged.
+ *
+ * So the build lands in docs/ and `npm run deploy:ghpages` copies it onto the
+ * gh-pages branch, which is what Pages actually publishes.
  *
  * Two files Pages needs that the Angular build does not produce:
  *   404.html   — Pages serves this for unknown paths, so copying index.html into
@@ -44,3 +48,5 @@ console.log('docs/ ready for GitHub Pages');
 console.log(`  base href : ${base}`);
 console.log('  404.html  : written (SPA deep links)');
 console.log('  .nojekyll : written');
+console.log('
+Not live yet — run `npm run deploy:ghpages` to publish it.');
