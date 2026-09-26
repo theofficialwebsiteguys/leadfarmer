@@ -63,9 +63,19 @@ return [
     // Where messages are DELIVERED is not set here — it is the contact email
     // under Settings in the dashboard, so the client can change it themselves.
     // ---------------------------------------------------------------------
+    // `relay_url` is the shared submission service. Contact enquiries are POSTed
+    // there and delivered over authenticated SMTP, which is considerably more
+    // reliable than PHP's mail() on shared hosting. The call is made server to
+    // server, so CORS does not apply and the recipient is never chosen by the
+    // visitor. Set it to null to use mail() directly instead.
+    //
+    // If the service is unreachable the API falls back to mail() on its own,
+    // and either way the enquiry is already saved to the dashboard first.
     'mail' => [
-        'from'      => null,
-        'from_name' => 'Lead Farmer Website',
+        'relay_url'     => 'https://twg-template-submission-92b1532f00c1.herokuapp.com/send-email-universal',
+        'relay_timeout' => 20,
+        'from'          => null,
+        'from_name'     => 'Lead Farmer Website',
     ],
 
     // ---------------------------------------------------------------------

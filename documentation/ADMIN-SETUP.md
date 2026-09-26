@@ -213,21 +213,36 @@ vanishing.
 **Where enquiries are delivered** is the contact email under *Settings* in the
 dashboard — the client can change it themselves without touching config.
 
-**Who they are sent from** is `mail.from` in `config.php`. It must be an address
-on this domain:
+> **Set this before launch.** It seeds as `info@leadfarmer.com`, which came from
+> the original site copy and may not be a real mailbox. If it is wrong, enquiries
+> still appear under Messages but nobody gets notified.
+
+**How they are sent.** Enquiries are POSTed to the shared submission service
+(the same Heroku app the other client sites use), which delivers them over
+authenticated SMTP — considerably more reliable than PHP's `mail()` on shared
+hosting. The call is made server to server, so the browser's CORS rules never
+come into it and the Lead Farmer domain does **not** need adding to that
+service's allow-list.
 
 ```php
 'mail' => [
-    'from'      => 'no-reply@yourdomain.com',
-    'from_name' => 'Lead Farmer Website',
+    'relay_url'     => 'https://twg-template-submission-92b1532f00c1.herokuapp.com/send-email-universal',
+    'relay_timeout' => 20,
+    'from'          => null,   // only used by the mail() fallback
+    'from_name'     => 'Lead Farmer Website',
 ],
 ```
 
-Create that mailbox first in cPanel → *Email Accounts*. Sending as the visitor's
-own address would fail SPF/DKIM and land in spam; their address goes in
-`Reply-To` instead, so hitting reply still answers them.
+If that service is unreachable the API falls back to PHP `mail()` on its own.
+Set `relay_url` to `null` to skip the service entirely and always use `mail()`.
 
-Leave `from` as `null` and it is derived as `no-reply@yourdomain.com`.
+The recipient is never taken from the request — a visitor cannot redirect an
+enquiry by posting their own `businessEmail`.
+
+> **What the delivered flag means.** The service answers 200 once the message
+> is *accepted for delivery*, which is not the same as it arriving. A message
+> shown as delivered in the dashboard could still bounce or be filtered. The
+> flag is there to catch outages, not to prove inbox arrival.
 
 The wholesale button on every strain page links to this form with the strain
 pre-filled, rather than opening a `mailto:` — which does nothing for anyone

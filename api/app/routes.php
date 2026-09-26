@@ -195,45 +195,28 @@ $router->post('/contact', static function (Request $request): void {
         Response::error(500, 'not_configured', 'The contact form is not set up yet. Please email us directly.');
     }
 
-    if ($data['strainName'] !== '') {
-        $subject = 'Wholesale enquiry — ' . $data['strainName'];
-    } elseif ($data['subject'] !== '') {
-        $subject = $data['subject'];
-    } else {
-        $subject = 'Website enquiry';
-    }
+    // Stored BEFORE the send is attempted. Delivery goes out over the network
+    // and can be slow or fail; recording first means a timeout costs a
+    // notification, never the enquiry itself.
+    $messageId = ContactRepo::store($data, $request->ip(), false);
 
-    $bodyLines = [
-        'New message from the Lead Farmer website.',
-        '',
-        'Name:    ' . $data['name'],
-        'Email:   ' . $data['email'],
+    // Keys become the labels in the client's inbox, in this order.
+    $fields = [
+        'Name'    => $data['name'],
+        'Email'   => $data['email'],
+        'Phone'   => $data['phone'],
+        'Strain'  => $data['strainName'],
+        'Message' => $data['message'],
     ];
-    if ($data['phone'] !== '') {
-        $bodyLines[] = 'Phone:   ' . $data['phone'];
+
+    $result = Mailer::deliverEnquiry($recipient, $fields, $data['email'], $data['name']);
+
+    if ($result['sent']) {
+        ContactRepo::markEmailSent($messageId, true);
     }
-    if ($data['strainName'] !== '') {
-        $bodyLines[] = 'Strain:  ' . $data['strainName'];
-    }
-    $bodyLines[] = '';
-    $bodyLines[] = 'Message:';
-    $bodyLines[] = $data['message'];
-    $bodyLines[] = '';
-    $bodyLines[] = '---';
-    $bodyLines[] = 'Reply directly to this email to answer ' . $data['name'] . '.';
 
-    $emailSent = Mailer::send(
-        $recipient,
-        $subject,
-        implode("\n", $bodyLines),
-        $data['email'],
-        $data['name']
-    );
-
-    // Stored either way: if the mail server hiccups, the enquiry is still in the
-    // dashboard rather than lost.
-    ContactRepo::store($data, $request->ip(), $emailSent);
-
+    // The visitor is told it worked either way — their message is safely stored
+    // and visible in the dashboard, flagged if the notification did not go out.
     Response::ok(['received' => true]);
 });
 

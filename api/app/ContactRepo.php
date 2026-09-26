@@ -70,6 +70,15 @@ final class ContactRepo
         return $row === null ? null : self::toJson($row);
     }
 
+    /** Flipped once delivery succeeds; the row is written before that is known. */
+    public static function markEmailSent(int $id, bool $sent): void
+    {
+        Database::run(
+            'UPDATE contact_messages SET email_sent = :sent WHERE id = :id',
+            ['sent' => $sent ? 1 : 0, 'id' => $id]
+        );
+    }
+
     public static function markRead(int $id, bool $isRead): void
     {
         Database::run(

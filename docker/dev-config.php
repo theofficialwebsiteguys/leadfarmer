@@ -33,12 +33,18 @@ return [
         'allowed_mimes' => ['image/jpeg', 'image/png', 'image/webp'],
     ],
 
-    // The dev container has no mail transport, so mail() fails and the contact
-    // form falls back to storing the message — which is exactly the path worth
-    // exercising locally. Submissions appear under Messages in the dashboard.
+    // Relay is OFF locally so development never sends real email to a real
+    // inbox. The container has no mail transport either, so submissions take
+    // the "stored but not delivered" path — which is the branch worth
+    // exercising. They appear under Messages in the dashboard, flagged.
+    //
+    // Point relay_url at the live service (see config.example.php) only when
+    // you deliberately want to test end-to-end delivery.
     'mail' => [
-        'from'      => 'no-reply@localhost',
-        'from_name' => 'Lead Farmer Website (local)',
+        'relay_url'     => null,
+        'relay_timeout' => 20,
+        'from'          => 'no-reply@localhost',
+        'from_name'     => 'Lead Farmer Website (local)',
     ],
 
     'session' => [

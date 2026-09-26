@@ -21,6 +21,124 @@ namespace LeadFarmer\Lib;
 final class Mailer
 {
     /**
+     * Delivers a contact enquiry.
+     *
+     * Prefers the shared submission service (nodemailer over authenticated
+     * SMTP), which delivers far more reliably than PHP's mail() on shared
+     * hosting. Falls back to mail() if the service is unreachable — a sleeping
+     * dyno or a network blip should not cost the client an enquiry.
+     *
+     * Called server-to-server, so the browser's CORS rules do not apply and the
+     * recipient is never something a visitor can choose.
+     *
+     * @param array<string,string> $fields Form values, in the order they should read.
+     * @return array{sent:bool,via:string}
+     */
+    public static function deliverEnquiry(string $to, array $fields, string $replyToEmail, string $replyToName): array
+    {
+        $relayUrl = Config::get('mail.relay_url');
+
+        if (is_string($relayUrl) && $relayUrl !== '') {
+            if (self::relay($relayUrl, $to, $fields)) {
+                return ['sent' => true, 'via' => 'relay'];
+            }
+            error_log('[leadfarmer-api] Mailer: relay failed, falling back to mail().');
+        }
+
+        $body = [];
+        foreach ($fields as $label => $value) {
+            if ($value !== '') {
+                $body[] = $label . ': ' . $value;
+            }
+        }
+
+        $sent = self::send($to, 'Form Submission via Website', implode("\n", $body), $replyToEmail, $replyToName);
+
+        return ['sent' => $sent, 'via' => $sent ? 'php_mail' : 'none'];
+    }
+
+    /**
+     * POSTs to the shared submission service.
+     *
+     * The service reads `businessEmail` as the recipient and turns every other
+     * key into a "Label: value" line, so the keys here are the labels the client
+     * sees in their inbox. `email` is special — the service uses it as Reply-To.
+     *
+     * @param array<string,string> $fields
+     */
+    private static function relay(string $url, string $to, array $fields): bool
+    {
+        $payload = ['businessEmail' => $to];
+        foreach ($fields as $label => $value) {
+            if ($value !== '') {
+                // Lower camel keys: the service splits them back into words.
+                $payload[lcfirst(str_replace(' ', '', ucwords(strtolower($label))))] = $value;
+            }
+        }
+
+        $json = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            return false;
+        }
+
+        // Generous timeout: a sleeping dyno can take ten seconds to wake. The
+        // message is already stored by this point, so a slow send is survivable.
+        $timeout = (int) Config::get('mail.relay_timeout', 20);
+
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $json,
+                CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Accept: application/json'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => $timeout,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYHOST => 2,
+            ]);
+
+            $response = curl_exec($ch);
+            $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            if ($response === false || $status < 200 || $status >= 300) {
+                error_log(sprintf('[leadfarmer-api] Mailer relay HTTP %d: %s', $status, $error !== '' ? $error : (string) $response));
+                return false;
+            }
+
+            return true;
+        }
+
+        // Hosts with cURL disabled still have the streams wrapper.
+        $context = stream_context_create([
+            'http' => [
+                'method'        => 'POST',
+                'header'        => "Content-Type: application/json\r\nAccept: application/json\r\n",
+                'content'       => $json,
+                'timeout'       => $timeout,
+                'ignore_errors' => true,
+            ],
+        ]);
+
+        $response = @file_get_contents($url, false, $context);
+        if ($response === false) {
+            error_log('[leadfarmer-api] Mailer relay: request failed (no cURL).');
+            return false;
+        }
+
+        // $http_response_header is set by the streams wrapper.
+        $statusLine = $http_response_header[0] ?? '';
+        if (preg_match('#\s(\d{3})\s#', $statusLine, $m) !== 1 || (int) $m[1] < 200 || (int) $m[1] >= 300) {
+            error_log('[leadfarmer-api] Mailer relay: ' . $statusLine);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param string $to      Recipient, from configuration — never from user input.
      * @param string $subject
      * @param string $body    Plain text.
