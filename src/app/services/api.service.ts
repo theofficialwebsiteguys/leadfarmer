@@ -129,7 +129,7 @@ export class ApiService {
       return new ApiRequestError(
         error.status,
         'api_unavailable',
-        'The content service is not responding. If this is a preview or test site, the admin dashboard only works where the backend is installed.'
+        'The server is not responding. If this is a preview or test site, this feature only works where the backend is installed.'
       );
     }
 

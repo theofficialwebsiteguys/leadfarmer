@@ -48,7 +48,7 @@ import { ApiStrain } from '../../models/content.model';
               <p class="admin__list-meta">
                 <span>{{ photoCount(strain) }} photo{{ photoCount(strain) === 1 ? '' : 's' }}</span>
                 @if (strain.featured) {
-                  <span class="admin__badge admin__badge--featured">Featured</span>
+                  <span class="admin__badge admin__badge--featured">Home page</span>
                 }
                 @if (!strain.isPublished) {
                   <span class="admin__badge admin__badge--hidden">Hidden</span>

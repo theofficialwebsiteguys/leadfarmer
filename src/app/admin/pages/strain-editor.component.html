@@ -74,7 +74,7 @@
     <div class="admin__row">
       <label class="admin__checkbox">
         <input type="checkbox" name="featured" [(ngModel)]="form.featured">
-        <span>Feature this strain (shows first in the menu)</span>
+        <span>Show on the home page</span>
       </label>
 
       <label class="admin__checkbox">
@@ -82,6 +82,10 @@
         <span>Show on the website</span>
       </label>
     </div>
+    <p class="admin__help">
+      Featured strains appear in the “What We Grow” section on the home page and sort to the front
+      of the full menu. Everything else is still on the Strains page.
+    </p>
 
     @if (!form.isPublished) {
       <div class="admin__notice admin__notice--warn">

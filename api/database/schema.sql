@@ -178,6 +178,33 @@ CREATE TABLE IF NOT EXISTS articles (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
+-- Contact form submissions.
+--
+-- Every message is stored as well as emailed. PHP's mail() on shared hosting
+-- fails quietly often enough that email alone would lose enquiries, so the
+-- database is the record and the email is the notification.
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name         VARCHAR(191) NOT NULL,
+  email        VARCHAR(191) NOT NULL,
+  phone        VARCHAR(60) NULL,
+  subject      VARCHAR(191) NULL,
+  message      TEXT NOT NULL,
+  -- Set when the enquiry came from a strain's wholesale button.
+  strain_name  VARCHAR(191) NULL,
+  ip_address   VARCHAR(45) NULL,
+  -- Whether the notification email actually went out.
+  email_sent   TINYINT(1) NOT NULL DEFAULT 0,
+  is_read      TINYINT(1) NOT NULL DEFAULT 0,
+  created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_contact_messages_created (created_at),
+  KEY idx_contact_messages_unread (is_read, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
 -- Home page photo gallery
 --
 -- Curated by hand in the dashboard. It was originally assembled automatically

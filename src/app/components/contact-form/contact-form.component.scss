@@ -1,0 +1,173 @@
+// The form sits inside the home page's black contact band, so everything here
+// is styled for a dark background.
+
+.contact-form {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.45rem;
+  }
+
+  &__optional {
+    letter-spacing: 0.08em;
+    text-transform: none;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0;
+    transition: border-color 0.2s, background 0.2s;
+
+    &::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+    &:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.4); }
+
+    &:focus {
+      outline: 2px solid var(--color-white);
+      outline-offset: 2px;
+      border-color: var(--color-white);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: #ff8f85;
+      background: rgba(255, 143, 133, 0.1);
+    }
+
+    &:disabled { opacity: 0.55; cursor: not-allowed; }
+  }
+
+  &__textarea {
+    min-height: 8rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  &__error {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: #ff8f85;
+    margin-top: 0.35rem;
+  }
+
+  &__error-banner {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: #ff8f85;
+    border-left: 3px solid #ff8f85;
+    background: rgba(255, 143, 133, 0.1);
+    padding: 0.75rem 0.9rem;
+    text-align: left;
+  }
+
+  &__context {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-left: 3px solid rgba(255, 255, 255, 0.4);
+    padding: 0.6rem 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+
+    strong { color: var(--color-white); }
+  }
+
+  &__submit {
+    align-self: flex-start;
+    margin-top: 0.4rem;
+    cursor: pointer;
+
+    @media (max-width: 560px) {
+      align-self: stretch;
+      text-align: center;
+    }
+  }
+
+  // Off-screen rather than display:none — some bots skip hidden inputs, but
+  // most fill in anything present in the DOM.
+  &__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  // ---- Success state -------------------------------------------------------
+
+  &__done {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &__done-heading {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+  }
+
+  &__done-body {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.25rem;
+  }
+
+  &__reset {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: none;
+    border: 0;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.5);
+    padding: 0 0 0.2rem;
+    cursor: pointer;
+
+    &:hover { border-bottom-color: var(--color-white); }
+    &:focus-visible { outline: 2px solid var(--color-white); outline-offset: 3px; }
+  }
+}

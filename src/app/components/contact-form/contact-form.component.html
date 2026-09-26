@@ -1,0 +1,96 @@
+@if (sent()) {
+  <div class="contact-form__done" role="status">
+    <p class="contact-form__done-heading">Message sent</p>
+    <p class="contact-form__done-body">
+      Thanks for getting in touch — we'll reply to the address you gave us.
+    </p>
+    <button type="button" class="contact-form__reset" (click)="reset()">Send another message</button>
+  </div>
+} @else {
+  <form class="contact-form" (ngSubmit)="submit()" novalidate>
+
+    @if (errorMessage()) {
+      <p class="contact-form__error-banner" role="alert">{{ errorMessage() }}</p>
+    }
+
+    @if (form.strainName) {
+      <p class="contact-form__context">
+        Wholesale enquiry about <strong>{{ form.strainName }}</strong>
+      </p>
+    }
+
+    <div class="contact-form__row">
+      <div class="contact-form__field">
+        <label class="contact-form__label" for="contact-name">Name</label>
+        <input
+          id="contact-name"
+          name="name"
+          class="contact-form__input"
+          type="text"
+          autocomplete="name"
+          required
+          [(ngModel)]="form.name"
+          [attr.aria-invalid]="errorFor('name') ? 'true' : null"
+          [disabled]="sending()"
+        >
+        @if (errorFor('name')) { <p class="contact-form__error">{{ errorFor('name') }}</p> }
+      </div>
+
+      <div class="contact-form__field">
+        <label class="contact-form__label" for="contact-email">Email</label>
+        <input
+          id="contact-email"
+          name="email"
+          class="contact-form__input"
+          type="email"
+          autocomplete="email"
+          required
+          [(ngModel)]="form.email"
+          [attr.aria-invalid]="errorFor('email') ? 'true' : null"
+          [disabled]="sending()"
+        >
+        @if (errorFor('email')) { <p class="contact-form__error">{{ errorFor('email') }}</p> }
+      </div>
+    </div>
+
+    <div class="contact-form__field">
+      <label class="contact-form__label" for="contact-phone">Phone <span class="contact-form__optional">(optional)</span></label>
+      <input
+        id="contact-phone"
+        name="phone"
+        class="contact-form__input"
+        type="tel"
+        autocomplete="tel"
+        [(ngModel)]="form.phone"
+        [disabled]="sending()"
+      >
+    </div>
+
+    <div class="contact-form__field">
+      <label class="contact-form__label" for="contact-message">Message</label>
+      <textarea
+        id="contact-message"
+        name="message"
+        class="contact-form__input contact-form__textarea"
+        required
+        [(ngModel)]="form.message"
+        [attr.aria-invalid]="errorFor('message') ? 'true' : null"
+        [disabled]="sending()"
+      ></textarea>
+      @if (errorFor('message')) { <p class="contact-form__error">{{ errorFor('message') }}</p> }
+    </div>
+
+    <!--
+      Honeypot. Hidden from people (and from screen readers via aria-hidden +
+      tabindex), so anything that fills it in is automated.
+    -->
+    <div class="contact-form__hp" aria-hidden="true">
+      <label for="contact-website">Website</label>
+      <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" [(ngModel)]="form.website">
+    </div>
+
+    <button type="submit" class="btn btn--white contact-form__submit" [disabled]="sending()">
+      {{ sending() ? 'Sending…' : submitLabel }}
+    </button>
+  </form>
+}

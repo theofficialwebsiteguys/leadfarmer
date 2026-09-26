@@ -56,6 +56,11 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('./pages/collection-manager.component').then(m => m.CollectionManagerComponent)
       },
       {
+        path: 'messages',
+        title: 'Messages — Lead Farmer',
+        loadComponent: () => import('./pages/messages.component').then(m => m.AdminMessagesComponent)
+      },
+      {
         path: 'media',
         title: 'Images — Lead Farmer',
         loadComponent: () => import('./pages/media-library.component').then(m => m.MediaLibraryComponent)

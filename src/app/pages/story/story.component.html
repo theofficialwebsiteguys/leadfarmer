@@ -124,7 +124,7 @@
     <p class="story-cta__body">{{ ctaBody }}</p>
     <div class="story-cta__actions">
       <a [routerLink]="ctaPrimaryLink" class="btn btn--black">{{ ctaPrimaryLabel }}</a>
-      <a [href]="'mailto:' + contactEmail" class="btn btn--outline">{{ ctaSecondaryLabel }}</a>
+      <a routerLink="/" fragment="contact" class="btn btn--outline">{{ ctaSecondaryLabel }}</a>
     </div>
   </div>
 </section>

@@ -6,6 +6,7 @@ import { ContentStore } from '../../services/content-store.service';
 import { Strain } from '../../models/strain.model';
 import { Article, GalleryImage } from '../../models/content.model';
 import { StrainGridComponent } from '../../components/strain-grid/strain-grid.component';
+import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
 
 interface Photo {
   src: string;
@@ -17,7 +18,7 @@ interface Photo {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [DatePipe, UpperCasePipe, RouterLink, StrainGridComponent],
+  imports: [DatePipe, UpperCasePipe, RouterLink, StrainGridComponent, ContactFormComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -76,7 +77,9 @@ export class HomeComponent implements AfterViewInit {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly strainsService: StrainsService
   ) {
-    this.strains = this.strainsService.getAll();
+    // Only the strains ticked as featured in the admin panel — the full menu
+    // lives on /strains. The section hides itself when nothing is featured.
+    this.strains = this.strainsService.getFeatured();
     this.articles = this.content.articles;
 
     // The gallery is curated in the dashboard (Content → Gallery). It was

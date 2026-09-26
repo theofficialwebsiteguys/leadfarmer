@@ -4,6 +4,7 @@ import { ApiService } from '../../services/api.service';
 import {
   ApiStrain,
   Article,
+  ContactMessage,
   ContentBlock,
   Dispensary,
   GalleryImage,
@@ -87,6 +88,22 @@ export class AdminApiService {
 
   reorderItems(resource: CollectionResource, ids: number[]): Promise<unknown> {
     return firstValueFrom(this.api.post(`/admin/${resource}/reorder`, { ids: ids.map(String) }));
+  }
+
+  // --- Contact form messages -----------------------------------------------
+
+  getMessages(): Promise<{ messages: ContactMessage[]; unread: number }> {
+    return firstValueFrom(
+      this.api.get<{ messages: ContactMessage[]; unread: number }>('/admin/messages')
+    );
+  }
+
+  markMessageRead(id: number, isRead: boolean): Promise<ContactMessage> {
+    return firstValueFrom(this.api.put<ContactMessage>(`/admin/messages/${id}`, { isRead }));
+  }
+
+  deleteMessage(id: number): Promise<unknown> {
+    return firstValueFrom(this.api.delete(`/admin/messages/${id}`));
   }
 
   // --- Media ---------------------------------------------------------------

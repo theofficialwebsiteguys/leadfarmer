@@ -50,6 +50,25 @@ return [
     ],
 
     // ---------------------------------------------------------------------
+    // Outgoing mail for the contact form.
+    //
+    // `from` MUST be an address on this domain — mail claiming to come from the
+    // visitor's own address gets rejected or spam-filed by SPF/DKIM. The
+    // visitor's address is put in Reply-To instead, so replying still reaches
+    // them. Create the mailbox in cPanel → Email Accounts first.
+    //
+    // Leave `from` null and it is derived from public_base_url as
+    // no-reply@yourdomain.com.
+    //
+    // Where messages are DELIVERED is not set here — it is the contact email
+    // under Settings in the dashboard, so the client can change it themselves.
+    // ---------------------------------------------------------------------
+    'mail' => [
+        'from'      => null,
+        'from_name' => 'Lead Farmer Website',
+    ],
+
+    // ---------------------------------------------------------------------
     // Session / cookie settings.
     //   secure   — true in production (HTTPS only). Must be false for plain
     //              http:// local development or the cookie is dropped.

@@ -52,6 +52,7 @@ import { AdminOverlaysComponent } from '../components/admin-overlays.component';
             }
 
             <p class="admin__nav-group-label">Site</p>
+            <a routerLink="/admin/messages" routerLinkActive="admin__nav-link--active" class="admin__nav-link">Messages</a>
             <a routerLink="/admin/media" routerLinkActive="admin__nav-link--active" class="admin__nav-link">All images</a>
             <a routerLink="/admin/settings" routerLinkActive="admin__nav-link--active" class="admin__nav-link">Settings</a>
             <a href="/" target="_blank" rel="noopener" class="admin__nav-link">View website &#8599;</a>

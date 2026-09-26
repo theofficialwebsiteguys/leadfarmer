@@ -86,6 +86,22 @@ export interface StoryStat {
   isPublished: boolean;
 }
 
+/** A contact form enquiry, as stored and shown in the dashboard. */
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  /** Set when the enquiry came from a strain's wholesale button. */
+  strainName: string;
+  /** False when the notification email could not be delivered. */
+  emailSent: boolean;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export interface MediaItem {
   id: number;
   filename: string;

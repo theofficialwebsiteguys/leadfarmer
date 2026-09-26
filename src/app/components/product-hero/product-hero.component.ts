@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Strain, StrainImage } from '../../models/strain.model';
 import { StrainsService } from '../../services/strains.service';
 import { ContentStore } from '../../services/content-store.service';
@@ -7,7 +8,7 @@ import { ProductGalleryComponent } from '../product-gallery/product-gallery.comp
 @Component({
   selector: 'app-product-hero',
   standalone: true,
-  imports: [ProductGalleryComponent],
+  imports: [ProductGalleryComponent, RouterLink],
   templateUrl: './product-hero.component.html',
   styleUrl: './product-hero.component.scss'
 })
@@ -31,8 +32,12 @@ export class ProductHeroComponent implements OnChanges {
     }
   }
 
-  get wholesaleMailto(): string {
-    const email = this.content.text('homepage.contactEmail', 'info@leadfarmer.com');
-    return `mailto:${email}?subject=${encodeURIComponent('Wholesale Inquiry — ' + this.strain.name)}`;
+  /**
+   * Sends the visitor to the contact form with this strain pre-filled, rather
+   * than opening a mailto: — which does nothing useful for anyone browsing
+   * without a desktop mail client configured.
+   */
+  get wholesaleQueryParams(): Record<string, string> {
+    return { strain: this.strain.name };
   }
 }

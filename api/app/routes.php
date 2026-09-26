@@ -14,11 +14,13 @@ declare(strict_types=1);
  */
 
 use LeadFarmer\App\CollectionRepo;
+use LeadFarmer\App\ContactRepo;
 use LeadFarmer\App\ContentRepo;
 use LeadFarmer\App\MediaRepo;
 use LeadFarmer\App\StrainRepo;
 use LeadFarmer\Lib\Auth;
 use LeadFarmer\Lib\Database;
+use LeadFarmer\Lib\Mailer;
 use LeadFarmer\Lib\Request;
 use LeadFarmer\Lib\Response;
 use LeadFarmer\Lib\Router;
@@ -140,6 +142,99 @@ $router->get('/public/dispensaries', static function (): void {
 
 $router->get('/public/articles', static function (): void {
     Response::ok(CollectionRepo::all('articles', publishedOnly: true));
+});
+
+// ---------------------------------------------------------------------------
+// Public — contact form
+//
+// Open to anonymous visitors, so it is protected by shape rather than by a
+// session: a honeypot field, a per-IP hourly cap, and strict validation. The
+// recipient always comes from configuration — a visitor can never choose who
+// their message is delivered to, so this cannot be used as an open relay.
+// ---------------------------------------------------------------------------
+
+$router->post('/contact', static function (Request $request): void {
+    $v = new Validator($request->body());
+
+    // Bots fill in every field they can see; real browsers leave this one empty
+    // because it is hidden. Answer 200 so a bot cannot tell it was rejected.
+    $honeypot = (string) ($v->string('website', max: 200) ?? '');
+    if ($honeypot !== '') {
+        Response::ok(['received' => true]);
+    }
+
+    $data = [
+        'name'       => (string) $v->string('name', required: true, max: 191, label: 'name'),
+        'email'      => (string) $v->string('email', required: true, max: 191, label: 'email address'),
+        'phone'      => (string) ($v->string('phone', max: 60) ?? ''),
+        'subject'    => (string) ($v->string('subject', max: 191) ?? ''),
+        'message'    => (string) $v->string('message', required: true, max: 5000, min: 10, label: 'message'),
+        'strainName' => (string) ($v->string('strainName', max: 191) ?? ''),
+    ];
+
+    if ($data['email'] !== '' && filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
+        $v->addError('email', 'Enter a valid email address so we can reply.');
+    }
+
+    $v->stopIfFailed();
+
+    if (ContactRepo::isRateLimited($request->ip())) {
+        Response::error(
+            429,
+            'rate_limited',
+            'You have sent several messages recently. Please give us a little time to reply before sending another.'
+        );
+    }
+
+    // Recipient comes from the site's own settings, never from the request.
+    $recipientRow = ContentRepo::findByKey('homepage.contactEmail');
+    $recipient = $recipientRow !== null ? (string) $recipientRow['content_value'] : '';
+
+    if ($recipient === '' || filter_var($recipient, FILTER_VALIDATE_EMAIL) === false) {
+        error_log('[leadfarmer-api] Contact form: no valid recipient configured (homepage.contactEmail).');
+        Response::error(500, 'not_configured', 'The contact form is not set up yet. Please email us directly.');
+    }
+
+    if ($data['strainName'] !== '') {
+        $subject = 'Wholesale enquiry — ' . $data['strainName'];
+    } elseif ($data['subject'] !== '') {
+        $subject = $data['subject'];
+    } else {
+        $subject = 'Website enquiry';
+    }
+
+    $bodyLines = [
+        'New message from the Lead Farmer website.',
+        '',
+        'Name:    ' . $data['name'],
+        'Email:   ' . $data['email'],
+    ];
+    if ($data['phone'] !== '') {
+        $bodyLines[] = 'Phone:   ' . $data['phone'];
+    }
+    if ($data['strainName'] !== '') {
+        $bodyLines[] = 'Strain:  ' . $data['strainName'];
+    }
+    $bodyLines[] = '';
+    $bodyLines[] = 'Message:';
+    $bodyLines[] = $data['message'];
+    $bodyLines[] = '';
+    $bodyLines[] = '---';
+    $bodyLines[] = 'Reply directly to this email to answer ' . $data['name'] . '.';
+
+    $emailSent = Mailer::send(
+        $recipient,
+        $subject,
+        implode("\n", $bodyLines),
+        $data['email'],
+        $data['name']
+    );
+
+    // Stored either way: if the mail server hiccups, the enquiry is still in the
+    // dashboard rather than lost.
+    ContactRepo::store($data, $request->ip(), $emailSent);
+
+    Response::ok(['received' => true]);
 });
 
 // ---------------------------------------------------------------------------
@@ -290,6 +385,49 @@ $router->post('/admin/strains/reorder', static function (Request $request) use (
     StrainRepo::reorder(array_map('intval', $ids));
 
     Response::ok(['reordered' => count($ids)]);
+});
+
+// ---------------------------------------------------------------------------
+// Admin — contact form messages
+//
+// Like /admin/media below, these are declared before the generic
+// /admin/{resource} routes so the collection wildcard does not swallow them.
+// ---------------------------------------------------------------------------
+
+$router->get('/admin/messages', static function (Request $request) use ($adminGate): void {
+    $adminGate($request);
+
+    Response::ok([
+        'messages' => ContactRepo::all(),
+        'unread'   => ContactRepo::unreadCount(),
+    ]);
+});
+
+$router->put('/admin/messages/{id}', static function (Request $request, array $params) use ($adminGate): void {
+    $adminGate($request);
+
+    $id = (int) $params['id'];
+    if (ContactRepo::find($id) === null) {
+        Response::notFound('That message no longer exists.');
+    }
+
+    $v = new Validator($request->body());
+    $isRead = $v->bool('isRead', true);
+    $v->stopIfFailed();
+
+    ContactRepo::markRead($id, $isRead);
+
+    Response::ok(ContactRepo::find($id));
+});
+
+$router->delete('/admin/messages/{id}', static function (Request $request, array $params) use ($adminGate): void {
+    $adminGate($request);
+
+    if (!ContactRepo::delete((int) $params['id'])) {
+        Response::notFound('That message no longer exists.');
+    }
+
+    Response::ok(['deleted' => true]);
 });
 
 // ---------------------------------------------------------------------------

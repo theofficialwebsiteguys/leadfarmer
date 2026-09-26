@@ -55,6 +55,7 @@ import { AdminAuthService } from '../services/admin-auth.service';
           <li><strong>Articles</strong> — the field notes cards.</li>
           <li><strong>Dispensaries</strong> — shops on the Story page. The count updates itself.</li>
           <li><strong>Story page</strong> — the picture-and-text rows and the three statistics.</li>
+          <li><strong>Messages</strong> — enquiries sent through the contact form.</li>
           <li><strong>Settings</strong> — contact email and the merch store link.</li>
         </ul>
         <p class="admin__help" style="margin-top: 1rem; margin-bottom: 0">

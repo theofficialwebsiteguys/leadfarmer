@@ -164,12 +164,13 @@ The dashboard is deliberately small — only the things that actually change:
 
 | Dashboard section | Controls |
 |---|---|
-| **Strains** | Add/edit/delete/reorder products — name, description and photos |
+| **Strains** | Add/edit/delete/reorder products — name, description and photos. Ticking "Show on the home page" puts one in the home page strip |
 | **Gallery** | The photo strip on the home page — add, reorder, caption, remove |
 | **Articles** | The "Field Notes" cards |
 | **Dispensaries** | Shops on the Story page. Regions and shops sort A–Z automatically, and the statistic counting them updates itself |
 | **Story page → Sections** | The alternating picture-and-text rows |
 | **Story page → Statistics** | The three-across number band |
+| **Messages** | Enquiries from the contact form. Also emailed as they arrive |
 | **All images** | Every uploaded photo, with its description (alt text) |
 | **Settings** | Contact email, location line, and the merch store link |
 
@@ -198,6 +199,46 @@ client cannot break the design.
 
 Edits are live immediately: the next page load fetches fresh content. Nothing
 needs rebuilding or re-uploading.
+
+---
+
+## 4a. Contact form email
+
+The contact form on the home page emails each enquiry and stores a copy under
+**Messages** in the dashboard. The copy matters: PHP's `mail()` on shared
+hosting fails quietly often enough that email alone would lose enquiries, so a
+message whose email did not go out is flagged in the dashboard rather than
+vanishing.
+
+**Where enquiries are delivered** is the contact email under *Settings* in the
+dashboard — the client can change it themselves without touching config.
+
+**Who they are sent from** is `mail.from` in `config.php`. It must be an address
+on this domain:
+
+```php
+'mail' => [
+    'from'      => 'no-reply@yourdomain.com',
+    'from_name' => 'Lead Farmer Website',
+],
+```
+
+Create that mailbox first in cPanel → *Email Accounts*. Sending as the visitor's
+own address would fail SPF/DKIM and land in spam; their address goes in
+`Reply-To` instead, so hitting reply still answers them.
+
+Leave `from` as `null` and it is derived as `no-reply@yourdomain.com`.
+
+The wholesale button on every strain page links to this form with the strain
+pre-filled, rather than opening a `mailto:` — which does nothing for anyone
+browsing without a desktop mail client set up.
+
+Spam protection is a hidden honeypot field plus a five-per-hour cap per IP
+address, both enforced server-side. There is no CAPTCHA.
+
+If enquiries arrive in the dashboard but not by email, the cause is almost
+always mail configuration rather than the site: check the From address exists,
+and check cPanel → *Track Delivery*.
 
 ---
 

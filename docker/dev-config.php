@@ -33,6 +33,14 @@ return [
         'allowed_mimes' => ['image/jpeg', 'image/png', 'image/webp'],
     ],
 
+    // The dev container has no mail transport, so mail() fails and the contact
+    // form falls back to storing the message — which is exactly the path worth
+    // exercising locally. Submissions appear under Messages in the dashboard.
+    'mail' => [
+        'from'      => 'no-reply@localhost',
+        'from_name' => 'Lead Farmer Website (local)',
+    ],
+
     'session' => [
         'name' => 'lf_admin_session',
         // MUST be false locally: a Secure cookie is dropped over plain http://.

@@ -79,26 +79,28 @@
 <!-- ============================================================
      STRAINS — compact card grid
      ============================================================ -->
-<section class="strains" id="strains" aria-labelledby="strains-heading">
-  <div class="strains__inner">
+@if (strains.length) {
+  <section class="strains" id="strains" aria-labelledby="strains-heading">
+    <div class="strains__inner">
 
-    <div class="strains__header">
-      <p class="section-label">{{ strainsEyebrow }}</p>
-      <h2 id="strains-heading" class="section-heading">{{ strainsHeading }}</h2>
+      <div class="strains__header">
+        <p class="section-label">{{ strainsEyebrow }}</p>
+        <h2 id="strains-heading" class="section-heading">{{ strainsHeading }}</h2>
+      </div>
+
+      <app-strain-grid
+        [strains]="strains"
+        [cardHeadingLevel]="3"
+        [cardVariant]="'minimal'"
+      />
+
+      <div class="strains__cta">
+        <a routerLink="/strains" class="btn btn--black">{{ strainsButtonLabel }}</a>
+      </div>
+
     </div>
-
-    <app-strain-grid
-      [strains]="strains"
-      [cardHeadingLevel]="3"
-      [cardVariant]="'minimal'"
-    />
-
-    <div class="strains__cta">
-      <a routerLink="/strains" class="btn btn--black">{{ strainsButtonLabel }}</a>
-    </div>
-
-  </div>
-</section>
+  </section>
+}
 
 
 <!-- ============================================================
@@ -233,6 +235,10 @@
     >
 
     <h2 id="contact-heading" class="contact__heading">{{ contactHeading }}</h2>
+
+    <app-contact-form />
+
+    <p class="contact__or">Or email us directly</p>
 
     <a [href]="'mailto:' + contact.email" class="contact__email">
       {{ contact.email }}

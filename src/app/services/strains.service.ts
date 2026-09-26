@@ -23,6 +23,16 @@ export class StrainsService {
     return this.strains.find(strain => strain.slug === slug);
   }
 
+  /**
+   * The strains ticked as featured in the admin panel — what the home page
+   * shows. Returns an empty list when nothing is featured, and the home page
+   * hides the section rather than rendering an empty grid, so the client sees
+   * the consequence of unticking everything immediately.
+   */
+  getFeatured(): readonly Strain[] {
+    return this.strains.filter(strain => strain.featured);
+  }
+
   getAllImages(strain: Strain): StrainImage[] {
     return [strain.mainImage, ...(strain.galleryImages ?? []), ...(strain.packagingImages ?? [])];
   }
